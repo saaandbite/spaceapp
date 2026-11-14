@@ -6,7 +6,7 @@ This document provides a step-by-step tutorial to configure the Python virtual e
 
 ## 1. Virtual Environment (`venv`) Setup
 
-Ensure your terminal is located at the project root directory (`/home/ahmad/projects/spaceapp`).
+Ensure your terminal is located at the project root directory (folder hasil clone repo ini).
 
 ### Step 1: Create the Virtual Environment
 Run the following command (only needs to be performed once):
@@ -41,6 +41,8 @@ pip install -r requirements.txt
 Installed packages:
 - `pandas` & `numpy` (Data manipulation and numerical operations).
 - `jupyter`, `notebook`, & `ipykernel` (Notebook execution runtime).
+- `scikit-learn` & `matplotlib` (Machine learning modelling and plotting).
+- `rasterio` & `nbformat` (Reading the GPWv4 population raster and notebook execution).
 
 ### Step 4: Register Kernel to Jupyter (Recommended)
 Register the virtual environment kernel so it appears in VS Code and Jupyter Notebook:
@@ -81,12 +83,13 @@ jupyter nbconvert --to notebook --execute notebook/pipeline_transformation.ipynb
 
 ## 3. Project Notebooks & Workflow Sequence
 
-The `notebook/` folder contains three dedicated notebooks:
+The `notebook/` folder contains four dedicated notebooks (run in this order: API snapshot → population → pipeline → modeling):
 
 | Notebook File | Primary Objective | Generated Deliverables |
 | :--- | :--- | :--- |
 | **`preprocessing_api_to_json.ipynb`** | Ingests live NASA APIs (NeoWs, Sentry, CAD) using the `.env` API key into static raw snapshots. | Raw JSON files in `datasets/nasa_neows/`, `datasets/cneos_sentry/`, and `datasets/sbdb_cad/`. |
 | **`pipeline_transformation.ipynb`** | Cleans raw data (31,911 rows funnel), engineers 4 material classes, extracts 19 Indonesian meteorites, and standardizes CNEOS/API records. | Clean, transformed datasets in `datasets/transformed/` (hand-off for ML & Frontend). |
+| **`modeling_and_export.ipynb`** | K-Means clustering, Random Forest Fell-vs-Found classifier, trend/material/cluster analysis, and physics + map-pin computation for the frontend. | 12 JSON files in `datasets/exports/` (plus 2 CSV copies of the transformed meteorite tables) ready for the frontend. |
 | **`preprocessing_population.ipynb`** | Extracts NASA SEDAC GPWv4 global population raster into a 0.5° x 0.5° lookup grid. | `datasets/sedac_global_grid_lookup.json` (used for casualty estimation in simulator hazard rings). |
 
 ---
@@ -111,3 +114,7 @@ deactivate
      ```
 3. **NASA API Key not detected:**
    - Verify that `.env` is present at the project root with `API_KEY=your_key_here` or `NASA_API_KEY=your_key_here`.
+4. **`FileNotFoundError: File .tif tidak ditemukan` when running `preprocessing_population.ipynb`:**
+   - Run `jupyter nbconvert` from the project root, not from inside the `notebook/` folder. Since the 2026-11-14 fix the notebook also resolves the repo root by itself, but running from the project root is still the recommended way for all notebooks.
+5. **`modeling_and_export.ipynb` fails on its first cell (`assert "datetime_utc" not in df.columns`):**
+   - The committed `datasets/transformed/` files are stale. Run `pipeline_transformation.ipynb` first to regenerate them, then run the modeling notebook.

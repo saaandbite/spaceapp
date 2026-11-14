@@ -26,7 +26,7 @@ Lokasi: datasets/
     - Ukuran    : ~3.9 MB
     - Jumlah    : 45.716 baris mentah (10 kolom).
     - Status    : Data mentah sebelum pembersihan (mengandung missing NaN, 
-                  6.186 anomali Null Island (0,0), dan anomali tahun >2026).
+                  6.214 anomali Null Island (0,0), dan anomali tahun >2026).
     - Kegunaan  : Sumber data utama untuk analisis tren sains & Machine Learning.
 
 [2] cneos_fireball_data.csv
@@ -76,7 +76,11 @@ Dihasilkan oleh: notebook/preprocessing_api_to_json.ipynb
 
 [4] datasets/nasa_neows/browse.json
     - Deskripsi : Snapshot API NASA NeoWs Browse katalog asteroid dekat Bumi secara umum.
+    - Jumlah    : 20 objek.
     - Parameter : Parameter orbit Keplerian, klasifikasi orbit, dan ringkasan fisik.
+    - Catatan   : File ini ditulis oleh preprocessing_api_to_json.ipynb tetapi
+                  tidak dibaca oleh notebook mana pun (pipeline hanya memakai
+                  feed.json) — kandidat untuk dihapus, menunggu keputusan tim.
 
 --------------------------------------------------------------------------------
 3. DATASET HASIL TRANSFORMASI (TRANSFORMED & STANDARDIZED DATASETS)

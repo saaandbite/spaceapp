@@ -15,11 +15,11 @@
 Proyek ini menyelesaikan tiga masalah kritis sekaligus (Scientific, Civil Defense, & Spatial Translation):
 
 1. **Ilusi Tren & Anomali Data Mentah (The False Trend & Dirty Data Problem):**  
-   * Dataset mentah NASA (*Meteorite Landings*, 45.716 baris) tampak seolah-olah menunjukkan Bumi dihujani meteorit 60 kali lebih sering sejak tahun 1970-an (melonjak dari 136 temuan di dekade 1900-an menjadi 9.061 temuan di dekade 1990-an), serta menampilkan 6.186 titik jatuh palsu di Teluk Guinea pada koordinat `(0.0, 0.0)` (*Null Island*).  
+   * Dataset mentah NASA (*Meteorite Landings*, 45.716 baris) tampak seolah-olah menunjukkan Bumi dihujani meteorit 66,6 kali lebih sering sejak tahun 1970-an (melonjak dari 136 temuan di dekade 1900-an menjadi 9.061 temuan di dekade 1990-an), serta menampilkan 6.214 titik jatuh palsu di Teluk Guinea pada koordinat `(0.0, 0.0)` (*Null Island*).  
    * Tanpa pembersihan dan pemodelan *Data Mining*, data ini menghasilkan kesimpulan tren sistem Bumi yang keliru.  
 2. **Titik Buta Mitigasi "Chelyabinsk Blindspot" (Airburst vs. Crater Impact):**  
    * Saat bolide Chelyabinsk meledak di Rusia (2013), lebih dari 1.500 orang terluka karena mendekati jendela kaca setelah melihat kilatan cahaya dan terkena hempasan pecahan kaca dari gelombang kejut udara (*airburst shockwave*).  
-   * Masyarakat dan otoritas lokal sering mengira semua meteorit membentuk kawah di darat (*crater*). Padahal, hasil ekstraksi fitur pada 31.911 data bersih NASA membuktikan bahwa **90,74% meteorit adalah Ordinary Chondrite (batu silikat, kekuatan tarik 35 MPa)** yang meledak di atmosfer (ketinggian 15–30 km), sedangkan hanya **3,49% meteorit Iron/Stony-Iron (logam, 350 MPa)** yang sanggup menghantam tanah secara utuh.  
+   * Masyarakat dan otoritas lokal sering mengira semua meteorit membentuk kawah di darat (*crater*). Padahal, hasil ekstraksi fitur pada 31.911 data bersih NASA membuktikan bahwa **90,84% meteorit adalah Ordinary Chondrite (batu silikat, kekuatan tarik 35 MPa)** yang meledak di atmosfer (ketinggian 15–30 km), sedangkan hanya **3,49% meteorit Iron/Stony-Iron (logam, 350 MPa)** yang sanggup menghantam tanah secara utuh.  
 3. **Kesenjangan Angka Fisika Abstrak vs. Konteks Spasial Lokal:**  
    * Satuan energi astronomi (Joule atau Kiloton TNT) sulit dipahami dampaknya terhadap lingkungan sekitar oleh masyarakat maupun perencana kota, termasuk di Indonesia yang tercatat memiliki 19 rekaman jatuhan meteorit resmi di dataset NASA.
 
@@ -30,20 +30,20 @@ Proyek ini menyelesaikan tiga masalah kritis sekaligus (Scientific, Civil Defens
 ## **A. Audit Trail Pembersihan Data (Data Cleaning Funnel)**
 
 * **Data Mentah Awal (Raw Data):** 45.716 baris (10 kolom).  
-* **Penghapusan Missing Values (NaN):** 7.601 baris dihapus (menyisakan 38.115 baris).  
-* **Penghapusan Anomali Koordinat Null Island (0.0, 0.0):** 6.186 baris dihapus (menyisakan 31.929 baris).  
-* **Penghapusan Anomali Tahun (\>2026, misal typo 2101\) & Massa (\<=0 g):** 18 baris dihapus.  
+* **Penghapusan Missing Values (NaN):** 7.434 baris dihapus (menyisakan 38.282 baris).  
+* **Penghapusan Anomali Koordinat Null Island (0.0, 0.0):** 6.214 baris dihapus (menyisakan 32.068 baris).  
+* **Penghapusan Anomali Tahun (\>2026, misal typo 2101\) & Massa (\<=0 g):** 157 baris dihapus.  
 * **Total Data Bersih Siap Mining:** **31.911 baris (69,80% retensi)**.  
-* **Deteksi Outlier Massa (Metode IQR pada log10\_mass\_g):** Q1 \= 0,81 (6,50 g), Q3 \= 2,31 (202,10 g), IQR \= 1,49. Batas atas outlier \= log10\_mass \> 4,54 (**\> 35,04 kg**), menghasilkan **580 meteorit kategori masif (1,82%)**.
+* **Deteksi Outlier Massa (Metode IQR pada log10\_mass\_g):** Q1 \= 0,81 (6,50 g), Q3 \= 2,31 (202,10 g), IQR \= 1,49. Batas atas outlier \= log10\_mass \> 4,54 (**\> 35,04 kg**), menghasilkan **576 meteorit kategori masif (1,81%)**.
 
 ## **B. Feature Engineering: 4 Kelas Fisik Komposisi Material (dari kolom recclass)**
 
 | Kelas Komposisi | Proporsi Data | Rata-rata Massa | Median Massa | Rasio Fell | Sifat Fisik Utama | Analogi Playful | Rezim Dampak & Mitigasi Utama |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | **Iron / Stony-Iron** | 1.113 (3,49%) | 478,04 kg | 9.350 g | 5,30% | Densitas 7,8 g/cm³, Tarik 350 MPa | Seberat Grand Piano (\~270x batu biasa) | *Surface Crater Impact* \-\> Evakuasi ground-zero & defleksi kinetik DART (\>20m). |
-| **Achondrite** | 622 (1,95%) | 7,60 kg | 50,23 g | 7,23% | Densitas 3,2 g/cm³, Tarik 65 MPa | Seberat Bola Bowling | Disintegrasi atmosfer menengah-bawah (15–25 km) \-\> Peringatan *overpressure*. |
-| **Carbonaceous Chondrite** | 1.219 (3,82%) | 3,30 kg | 40,00 g | 6,48% | Densitas 2,2 g/cm³, Tarik 5 MPa | Seberat Kucing Rumahan | Disintegrasi termal / *High-Altitude Airburst* (\>35 km) \-\> Gelombang infrasonik. |
-| **Ordinary Chondrite** | 28.957 (90,74%) | 1,77 kg | 26,19 g | 3,04% | Densitas 3,4 g/cm³, Tarik 35 MPa | Seberat Laptop | Meledak di stratosfer/troposfer (15–30 km) \-\> Gelombang kejut luas & protokol anti-kaca. |
+| **Achondrite** | 985 (3,09%) | 5,62 kg | 65,31 g | 8,22% | Densitas 3,2 g/cm³, Tarik 65 MPa | Seberat Bola Bowling | Disintegrasi atmosfer menengah-bawah (15–25 km) \-\> Peringatan *overpressure*. |
+| **Carbonaceous Chondrite** | 825 (2,59%) | 3,90 kg | 28,00 g | 5,33% | Densitas 2,2 g/cm³, Tarik 5 MPa | Seberat Kucing Rumahan | Disintegrasi termal / *High-Altitude Airburst* (\>35 km) \-\> Gelombang infrasonik. |
+| **Ordinary Chondrite** | 28.988 (90,84%) | 1,77 kg | 26,20 g | 3,04% | Densitas 3,4 g/cm³, Tarik 35 MPa | Seberat Laptop | Meledak di stratosfer/troposfer (15–30 km) \-\> Gelombang kejut luas & protokol anti-kaca. |
 
 ## **C. Pemodelan Machine Learning (Unsupervised & Supervised)**
 
@@ -51,25 +51,29 @@ Proyek ini menyelesaikan tiga masalah kritis sekaligus (Scientific, Civil Defens
 
 | Cluster ID | Nama Region / Karakteristik Spasial | Jumlah Rekaman | Centroid Lat/Long | Median Massa | % Fell | Interpretasi Tren System |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **Cluster 0** | Sabuk Gurun Sahara & Arab | 5.998 | (23,86°N, 24,73°E) | 174 g | 6,24% | Preservasi iklim kering, pencarian daratan gundul. |
-| **Cluster 1** | Antarktika Timur Zona A | 12.308 | (-78,65°S, 160,58°E) | 16 g | 0,06% | Pengumpulan sistematis ekspedisi es (Search bias). |
-| **Cluster 2** | Antarktika Queen Maud Zona B | 6.066 | (-70,80°S, 49,11°E) | 3,25 g | 0,05% | Akumulasi fragmen es alami. |
-| **Cluster 3** | Transantarctic & Es Barat | 4.606 | (-72,19°S, \-3,79°W) | 68,1 g | 0,35% | Konsentrasi es bergerak. |
-| **Cluster 4** | Benua Berpenduduk (Global) | 2.933 | (26,15°N, \-23,45°W) | 6,40 kg | 22,60% | Wilayah pemukiman manusia (Dominasi *Fell*). |
+| **Cluster 0** | Antarktika (lon rata-rata 97°) | 12.791 | (-76,28°S, 96,74°E) | 4,79 g | 0,02% | Akumulasi sistematis hasil ekspedisi es (search bias). |
+| **Cluster 1** | Antarktika (lon rata-rata 107°) | 9.969 | (-75,32°S, 106,97°E) | 67,0 g | 0,31% | Akumulasi sistematis hasil ekspedisi es (search bias). |
+| **Cluster 2** | Sahara & Arab | 3.769 | (19,94°N, 58,48°E) | 249,4 g | 9,34% | Gurun kering: pencarian di daratan gundul. |
+| **Cluster 3** | Benua berpenduduk (global) | 3.025 | (29,17°N, 10,93°E) | 365,0 g | 14,84% | Wilayah pemukiman manusia: dominasi jatuhan yang teramati (Fell). |
+| **Cluster 4** | Amerika Utara (dataran & gurun) | 2.357 | (22,48°N, -93,71°W) | 1,30 kg | 9,76% | Dataran/gurun AS bagian barat-tengah: banyak temuan oleh pemburu meteorit. |
 
-*Catatan Kunci:* Klaster Antarktika (C1 \+ C2 \+ C3) menyumbang **22.980 rekaman (72,01% dari total data bersih)**.
+*Catatan Kunci:* Dua klaster Antarktika (C0 + C1) berisi **22.760 rekaman (71,32% dari total data bersih)**; total titik dengan lintang < -60° adalah **22.097 (69,25%)**.
 
 ### **2\. Random Forest Classifier (Prediksi Bias Observasi Fell vs. Found)**
 
-* **Akurasi Test Set:** **95,55%**  
-* **Skor ROC-AUC:** **0,9889**  
+* **Akurasi Test Set:** **98,61%**  
+* **Skor ROC-AUC:** **0,9946**  
+* **Balanced Accuracy:** **0,9112**  
+* **Skor PR-AUC:** **0,8541**  
 * **Feature Importance:**  
-  1. Absolute Latitude `|reclat|`: **35,02%**  
-  2. Latitude `reclat`: **31,57%** (Total pengaruh garis lintang \= **66,59%**)  
-  3. Log10 Mass `log10_mass_g`: **17,48%**  
-  4. Longitude `reclong`: **14,63%**  
+  1. Absolute Latitude `|reclat|`: **30,06%**  
+  2. Latitude `reclat`: **29,88%** (Total pengaruh garis lintang = **59,95%**)  
+  3. Log10 Mass `log10_mass_g`: **21,86%**  
+  4. Longitude `reclong`: **16,69%**  
   5. Composition Iron/Stony-Iron: **0,59%**  
-  6. Composition Ordinary Chondrite: **0,41%**
+  6. Composition Ordinary Chondrite: **0,46%**  
+  7. Composition Achondrite: **0,34%**  
+  8. Composition Carbonaceous Chondrite: **0,11%**
 
 ---
 
@@ -81,7 +85,7 @@ Menggunakan format *carousel* 3 langkah (1 grafik per layar) agar bebas dari *in
 
 * **Clue 1 (The 1970s Mystery Surge):** Grafik 12 dekade lengkap (1900s–2010s) dengan Dual Y-Axis yang memperlihatkan garis merah datar *Observed Falls* (54–88 per dekade) melawan lonjakan bar ekspedisi es Antarktika pasca-1970.  
 * **Clue 2 (Heavy Metal vs. Space Pebbles):** Perbandingan 4 kelas batuan lengkap dengan analogi berat benda sehari-hari (Grand Piano vs Laptop).  
-* **Clue 3 (AI Spotter & 5 Earth Zones):** Visualisasi Feature Importance Random Forest (AUC 0,9889) dan 5 klaster K-Means.
+* **Clue 3 (AI Spotter & 5 Earth Zones):** Visualisasi Feature Importance Random Forest (AUC 0,9946) dan 5 klaster K-Means.
 
 ## **Mode 2: "Treasure Map" (Global & Indonesia Spatial Explorer)**
 
@@ -117,7 +121,7 @@ Bagian ini disusun sebagai bahan diskusi tim untuk menentukan apakah akan memper
 
 ## **A. Ringkasan Sebelum Tambahan Dataset Baru (Versi Single Dataset Saat Ini)**
 
-Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah \-\> 31.911 data bersih) untuk menjawab tantangan Trend Detective dan mitigasi dampak. Pada Mode 1, model Random Forest (AUC 0,9889) dan K-Means (5 klaster) membuktikan bahwa jatuhan meteorit yang diamati manusia (Fell) selalu stabil 54–88 kejadian per dekade, sedangkan lonjakan pasca-1970 adalah bias ekspedisi es Antarktika. Pada Mode 2, sistem memetakan sebaran meteorit di seluruh dunia dari 5 klaster K-Means sekaligus menyediakan sorotan khusus untuk 19 meteorit Indonesia. Pada Mode 3, pengguna dapat menyimulasikan jatuhnya meteorit ke kota target di atas peta untuk melihat ketinggian pecah atmosfer (breakup altitude), tiga cincin radius bahaya dalam satuan meter/kilometer, protokol pertahanan sipil, serta simulasi defleksi DART.
+Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah \-\> 31.911 data bersih) untuk menjawab tantangan Trend Detective dan mitigasi dampak. Pada Mode 1, model Random Forest (AUC 0,9946) dan K-Means (5 klaster) membuktikan bahwa jatuhan meteorit yang diamati manusia (Fell) selalu stabil 54–88 kejadian per dekade, sedangkan lonjakan pasca-1970 adalah bias ekspedisi es Antarktika. Pada Mode 2, sistem memetakan sebaran meteorit di seluruh dunia dari 5 klaster K-Means sekaligus menyediakan sorotan khusus untuk 19 meteorit Indonesia. Pada Mode 3, pengguna dapat menyimulasikan jatuhnya meteorit ke kota target di atas peta untuk melihat ketinggian pecah atmosfer (breakup altitude), tiga cincin radius bahaya dalam satuan meter/kilometer, protokol pertahanan sipil, serta simulasi defleksi DART.
 
 * **Keterbatasan Versi 1 Dataset:** Wilayah samudra di peta terlihat kosong karena tidak ada manusia yang memungut batu di dasar laut; simulator baru menghitung jarak fisik (meter/km) tanpa estimasi jumlah penduduk terdampak; dan simulasi roket DART memakai sampel batu historis berukuran kecil.
 
@@ -125,7 +129,7 @@ Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah 
 
 | Sumber Data Tambahan | Integrasi Fitur di Aplikasi | Nilai Tambah Scientific & UX |
 | :---- | :---- | :---- |
-| **NASA CNEOS Fireballs & Bolide Data** | Mode 1 & Mode 2 (Sebaran titik ledakan bola api satelit 1988–sekarang) | Membuktikan secara visual bahwa 70% meteor meledak di laut. Menambahkan kasus historis **Bolide Bone (Sulut, 2009\)** energi \~50 kt TNT di alt 19 km. |
+| **NASA CNEOS Fireballs & Bolide Data** | Mode 1 & Mode 2 (Sebaran titik ledakan bola api satelit 1988–sekarang) | Membuktikan secara visual bahwa 70% meteor meledak di laut. Menambahkan kasus historis **Bolide Bone (Sulut, 2009\)** energi 33 kt TNT di alt 19 km. |
 | **NASA SEDAC Population Density** | Mode 3 (Overlay kepadatan penduduk per km² pada radius dampak) | Memberikan **estimasi kuantitatif jumlah warga** yang berada di dalam radius *window shatter* (\>1 psi) dan *airblast*. |
 | **NASA NeoWs API (Live Feed)** | Mode 3 (Preset pilihan objek asteroid *real-time*) | Memungkinkan simulasi defleksi **NASA DART** pada asteroid nyata berukuran ratusan meter secara presisi. |
 
@@ -135,8 +139,8 @@ Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah 
 
 | Slide \# | Focus Area | Key Narrative & Visual Elements |
 | :---- | :---- | :---- |
-| **Slide 1** | **The Hook** | Paradoks lonjakan data 1970-an (136 vs 9.061 temuan) & kasus 1.500 korban luka pecahan kaca Chelyabinsk (90,74% *Airburst* vs 3,49% *Crater*). |
-| **Slide 2** | **Data Cleaning & Trend Detective** | Funnel 45.716 \-\> 31.911 baris (6.186 bug *Null Island* dihapus), bukti kestabilan *Observed Falls* (54–88 per dekade), dan pembuktian bias Antarktika (72,01% data) serta lintang populasi via Random Forest (AUC 0,9889). |
+| **Slide 1** | **The Hook** | Paradoks lonjakan data 1970-an (136 vs 9.061 temuan) & kasus 1.500 korban luka pecahan kaca Chelyabinsk (90,84% *Airburst* vs 3,49% *Crater*). |
+| **Slide 2** | **Data Cleaning & Trend Detective** | Funnel 45.716 \-\> 31.911 baris (6.214 bug *Null Island* dihapus), bukti kestabilan *Observed Falls* (54–88 per dekade), dan pembuktian bias Antarktika (69,25% data) serta lintang populasi via Random Forest (AUC 0,9946). |
 | **Slide 3** | **Composition Physics** | Ekstraksi fitur `recclass` yang membuktikan meteorit besi (*Iron*, 350 MPa) memiliki rata-rata massa 478,04 kg (\~270x lebih berat dari *Ordinary Chondrite* 1,77 kg, 35 MPa). |
 | **Slide 4** | **Global & Indonesia Spatial Explorer** | Pemetaan 5 klaster K-Means seluruh dunia, perbandingan dengan satelit CNEOS Fireballs di lautan, serta sorotan 19 meteorit darat Indonesia \+ Bolide Bone Sulawesi. |
 | **Slide 5** | **Real-Map Impact & DART Simulator** | Demo langsung skenario jatuhan di atas peta jalan/satelit asli, estimasi warga terdampak (SEDAC), protokol *window-shatter* vs evakuasi kawah, dan defleksi lintasan DART. |
