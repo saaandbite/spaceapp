@@ -11,6 +11,8 @@ dengan standar skema baku:
 - Format Seragam Hasil Transformasi : CSV (.csv)
 - Standar Encoding                 : UTF-8
 - Standar Format Waktu Lintas Data : YYYY-MM-DD HH:MM:SS (UTC)
+                                      (pengecualian: Meteorite Landings hanya punya TAHUN -> kolom
+                                      `year` + `date_precision`, tanpa datetime_utc; data berakhir 2013)
 - Standar Nama Koordinat           : latitude & longitude (derajat desimal bertanda)
 - Standar Penamaan Kolom           : snake_case semantik dengan satuan eksplisit
 
@@ -81,13 +83,13 @@ Dihasilkan oleh: notebook/preprocessing_api_to_json.ipynb
 --------------------------------------------------------------------------------
 Lokasi: datasets/transformed/
 Dihasilkan oleh: notebook/pipeline_transformation.ipynb
-Standar: File CSV murni (.csv), UTF-8, Kolom Waktu 'datetime_utc' (YYYY-MM-DD HH:MM:SS)
+Standar: File CSV murni (.csv), UTF-8, Kolom Waktu 'datetime_utc' (YYYY-MM-DD HH:MM:SS); kecuali meteorit (hanya 'year')
 
 [1] meteorites_cleaned_transformed.csv
     - Deskripsi     : Dataset utama meteorit global bersih dan tertransformasi.
     - Dimensi       : 31.911 baris x 20 kolom (Retensi pembersihan: 69,80%).
     - Fitur Utama   :
-      * Identitas   : name, id, nametype, recclass, fall_type, year, datetime_utc
+      * Identitas   : name, id, nametype, recclass, fall_type, year (int), date_precision (='year')
       * Spasial     : latitude, longitude, abs_latitude, decade
       * Massa Fisik : mass_g, mass_kg, log10_mass_g, is_massive_outlier (>35 kg)
       * Rekayasa ML : material_class (4 kelas batuan luar angkasa), density_g_cm3,
