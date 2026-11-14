@@ -1,0 +1,1002 @@
+[
+  {
+    "designation":"2010 RF12",
+    "fullname":"(2010 RF12)",
+    "impact_probability":0.1026372591,
+    "diameter_km":0.0071,
+    "palermo_scale_max":-2.96,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.1000158814,
+    "year_range":"2095-2122"
+  },
+  {
+    "designation":"2020 CD3",
+    "fullname":"(2020 CD3)",
+    "impact_probability":0.0252338159,
+    "diameter_km":0.0015,
+    "palermo_scale_max":-5.63,
+    "torino_scale_max":0,
+    "velocity_inf_kms":null,
+    "year_range":"2082-2118"
+  },
+  {
+    "designation":"2026 TQ128",
+    "fullname":"(2026 TQ128)",
+    "impact_probability":0.0172242205,
+    "diameter_km":0.0015,
+    "palermo_scale_max":-5.89,
+    "torino_scale_max":0,
+    "velocity_inf_kms":null,
+    "year_range":"2078-2126"
+  },
+  {
+    "designation":"2017 WT28",
+    "fullname":"(2017 WT28)",
+    "impact_probability":0.0115439683,
+    "diameter_km":0.0082,
+    "palermo_scale_max":-3.85,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.4701168587,
+    "year_range":"2083-2121"
+  },
+  {
+    "designation":"2006 RH120",
+    "fullname":"(2006 RH120)",
+    "impact_probability":0.0081665017,
+    "diameter_km":0.004,
+    "palermo_scale_max":-4.45,
+    "torino_scale_max":0,
+    "velocity_inf_kms":null,
+    "year_range":"2044-2124"
+  },
+  {
+    "designation":"2020 VW",
+    "fullname":"(2020 VW)",
+    "impact_probability":0.0070262432,
+    "diameter_km":0.0073,
+    "palermo_scale_max":-4.09,
+    "torino_scale_max":0,
+    "velocity_inf_kms":9.6900149166,
+    "year_range":"2074-2079"
+  },
+  {
+    "designation":"2026 CQ4",
+    "fullname":"(2026 CQ4)",
+    "impact_probability":0.0050304134,
+    "diameter_km":0.01,
+    "palermo_scale_max":-3.8,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.6399048283,
+    "year_range":"2072-2125"
+  },
+  {
+    "designation":"2006 JY26",
+    "fullname":"(2006 JY26)",
+    "impact_probability":0.0050007634,
+    "diameter_km":0.0072,
+    "palermo_scale_max":-4.15,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.980557512,
+    "year_range":"2073-2125"
+  },
+  {
+    "designation":"2020 CQ1",
+    "fullname":"(2020 CQ1)",
+    "impact_probability":0.0046463572,
+    "diameter_km":0.0059,
+    "palermo_scale_max":-4.33,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.9002476415,
+    "year_range":"2070-2122"
+  },
+  {
+    "designation":"2022 SX55",
+    "fullname":"(2022 SX55)",
+    "impact_probability":0.0040203148,
+    "diameter_km":0.003,
+    "palermo_scale_max":-4.17,
+    "torino_scale_max":0,
+    "velocity_inf_kms":12.0500025408,
+    "year_range":"2035-2058"
+  },
+  {
+    "designation":"2022 NX1",
+    "fullname":"(2022 NX1)",
+    "impact_probability":0.0031724662,
+    "diameter_km":0.0084,
+    "palermo_scale_max":-4.28,
+    "torino_scale_max":0,
+    "velocity_inf_kms":null,
+    "year_range":"2075-2121"
+  },
+  {
+    "designation":"2000 SG344",
+    "fullname":"(2000 SG344)",
+    "impact_probability":0.0027433952,
+    "diameter_km":0.037,
+    "palermo_scale_max":-3.1,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.3580274445,
+    "year_range":"2069-2122"
+  },
+  {
+    "designation":"2012 HG2",
+    "fullname":"(2012 HG2)",
+    "impact_probability":0.0026843943,
+    "diameter_km":0.014,
+    "palermo_scale_max":-4.07,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.3224349234,
+    "year_range":"2052-2126"
+  },
+  {
+    "designation":"2017 LD",
+    "fullname":"(2017 LD)",
+    "impact_probability":0.0025264747,
+    "diameter_km":0.011,
+    "palermo_scale_max":-4.68,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.495391953,
+    "year_range":"2053-2126"
+  },
+  {
+    "designation":"2025 FK14",
+    "fullname":"(2025 FK14)",
+    "impact_probability":0.0024907415,
+    "diameter_km":0.004,
+    "palermo_scale_max":-4.99,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.3701279819,
+    "year_range":"2080-2090"
+  },
+  {
+    "designation":"2020 VV",
+    "fullname":"(2020 VV)",
+    "impact_probability":0.0023184416,
+    "diameter_km":0.012,
+    "palermo_scale_max":-4.28,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.5751486647,
+    "year_range":"2044-2122"
+  },
+  {
+    "designation":"2000 LG6",
+    "fullname":"(2000 LG6)",
+    "impact_probability":0.0021306256,
+    "diameter_km":0.0053,
+    "palermo_scale_max":-5.39,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.1144924108,
+    "year_range":"2081-2122"
+  },
+  {
+    "designation":"2020 VN1",
+    "fullname":"(2020 VN1)",
+    "impact_probability":0.001706598,
+    "diameter_km":0.0089,
+    "palermo_scale_max":-4.65,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.9600093637,
+    "year_range":"2115-2122"
+  },
+  {
+    "designation":"2022 UL11",
+    "fullname":"(2022 UL11)",
+    "impact_probability":0.0016424421,
+    "diameter_km":0.00501,
+    "palermo_scale_max":-5.42,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.9207116419,
+    "year_range":"2096-2123"
+  },
+  {
+    "designation":"2015 YJ",
+    "fullname":"(2015 YJ)",
+    "impact_probability":0.0016384716,
+    "diameter_km":0.0075,
+    "palermo_scale_max":-4.28,
+    "torino_scale_max":0,
+    "velocity_inf_kms":16.3473125317,
+    "year_range":"2042-2122"
+  },
+  {
+    "designation":"2010 VQ",
+    "fullname":"(2010 VQ)",
+    "impact_probability":0.0015891889,
+    "diameter_km":0.0097,
+    "palermo_scale_max":-4.45,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.6278252749,
+    "year_range":"2087-2124"
+  },
+  {
+    "designation":"2025 DW",
+    "fullname":"(2025 DW)",
+    "impact_probability":0.0015349277,
+    "diameter_km":0.0023,
+    "palermo_scale_max":-6.16,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.4872109368,
+    "year_range":"2081-2125"
+  },
+  {
+    "designation":"2016 VB1",
+    "fullname":"(2016 VB1)",
+    "impact_probability":0.0013603842,
+    "diameter_km":0.0066,
+    "palermo_scale_max":-5.45,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.4538233806,
+    "year_range":"2065-2121"
+  },
+  {
+    "designation":"2011 AM37",
+    "fullname":"(2011 AM37)",
+    "impact_probability":0.0011992228,
+    "diameter_km":0.0038,
+    "palermo_scale_max":-5.26,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.6524987416,
+    "year_range":"2048-2119"
+  },
+  {
+    "designation":"2014 JR24",
+    "fullname":"(2014 JR24)",
+    "impact_probability":0.0011753852,
+    "diameter_km":0.0047,
+    "palermo_scale_max":-5.21,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.723033508,
+    "year_range":"2069-2122"
+  },
+  {
+    "designation":"2021 FM2",
+    "fullname":"(2021 FM2)",
+    "impact_probability":0.0010967055,
+    "diameter_km":0.003,
+    "palermo_scale_max":-5.48,
+    "torino_scale_max":0,
+    "velocity_inf_kms":10.8499464772,
+    "year_range":"2070-2083"
+  },
+  {
+    "designation":"2022 OH2",
+    "fullname":"(2022 OH2)",
+    "impact_probability":0.0010950641,
+    "diameter_km":0.011,
+    "palermo_scale_max":-4.71,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.6188793658,
+    "year_range":"2087-2122"
+  },
+  {
+    "designation":"2026 DL14",
+    "fullname":"(2026 DL14)",
+    "impact_probability":0.0010781506,
+    "diameter_km":0.0047,
+    "palermo_scale_max":-5.1,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.3801203763,
+    "year_range":"2063-2103"
+  },
+  {
+    "designation":"2025 DT1",
+    "fullname":"(2025 DT1)",
+    "impact_probability":0.0010419558,
+    "diameter_km":0.0064,
+    "palermo_scale_max":-4.82,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.6100364361,
+    "year_range":"2072-2123"
+  },
+  {
+    "designation":"2011 BL45",
+    "fullname":"(2011 BL45)",
+    "impact_probability":0.0010298487,
+    "diameter_km":0.013,
+    "palermo_scale_max":-4.51,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.6763083571,
+    "year_range":"2050-2122"
+  },
+  {
+    "designation":"2021 RP2",
+    "fullname":"(2021 RP2)",
+    "impact_probability":0.0010183249,
+    "diameter_km":0.003,
+    "palermo_scale_max":-6.27,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.4525989074,
+    "year_range":"2050-2125"
+  },
+  {
+    "designation":"2019 LW4",
+    "fullname":"(2019 LW4)",
+    "impact_probability":0.0010125978,
+    "diameter_km":0.012,
+    "palermo_scale_max":-4.29,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.6205550031,
+    "year_range":"2083-2117"
+  },
+  {
+    "designation":"2023 PZ",
+    "fullname":"(2023 PZ)",
+    "impact_probability":0.0009945836,
+    "diameter_km":0.005,
+    "palermo_scale_max":-5.5,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.079315714,
+    "year_range":"2077-2124"
+  },
+  {
+    "designation":"2022 RD2",
+    "fullname":"(2022 RD2)",
+    "impact_probability":0.0009742776,
+    "diameter_km":0.0066,
+    "palermo_scale_max":-5.81,
+    "torino_scale_max":0,
+    "velocity_inf_kms":0.4107581351,
+    "year_range":"2080-2124"
+  },
+  {
+    "designation":"2023 HW39",
+    "fullname":"(2023 HW39)",
+    "impact_probability":0.0008791654,
+    "diameter_km":0.0014,
+    "palermo_scale_max":-6.81,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.3856813185,
+    "year_range":"2042-2123"
+  },
+  {
+    "designation":"2026 AE4",
+    "fullname":"(2026 AE4)",
+    "impact_probability":0.0008470208,
+    "diameter_km":0.0047,
+    "palermo_scale_max":-5.41,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.9796352767,
+    "year_range":"2084-2117"
+  },
+  {
+    "designation":"2021 GE2",
+    "fullname":"(2021 GE2)",
+    "impact_probability":0.000740505,
+    "diameter_km":0.005,
+    "palermo_scale_max":-3.93,
+    "torino_scale_max":0,
+    "velocity_inf_kms":15.3599999325,
+    "year_range":"2030-2049"
+  },
+  {
+    "designation":"2025 SS7",
+    "fullname":"(2025 SS7)",
+    "impact_probability":0.0007199479,
+    "diameter_km":0.0033,
+    "palermo_scale_max":-5.73,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.9314070042,
+    "year_range":"2064-2125"
+  },
+  {
+    "designation":"2016 SA2",
+    "fullname":"(2016 SA2)",
+    "impact_probability":0.000704579,
+    "diameter_km":0.008,
+    "palermo_scale_max":-5.45,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.2031307945,
+    "year_range":"2110-2122"
+  },
+  {
+    "designation":"2018 XQ2",
+    "fullname":"(2018 XQ2)",
+    "impact_probability":0.0007003379,
+    "diameter_km":0.008,
+    "palermo_scale_max":-5.53,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.8088853216,
+    "year_range":"2068-2126"
+  },
+  {
+    "designation":"2010 UK",
+    "fullname":"(2010 UK)",
+    "impact_probability":0.0006709082,
+    "diameter_km":0.014,
+    "palermo_scale_max":-4.18,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.082125313,
+    "year_range":"2068-2121"
+  },
+  {
+    "designation":"2018 NJ",
+    "fullname":"(2018 NJ)",
+    "impact_probability":0.0006577992,
+    "diameter_km":0.0093,
+    "palermo_scale_max":-4.79,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.8506314322,
+    "year_range":"2083-2122"
+  },
+  {
+    "designation":"2021 EJ3",
+    "fullname":"(2021 EJ3)",
+    "impact_probability":0.0006464105,
+    "diameter_km":0.0098,
+    "palermo_scale_max":-5.35,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.1557250139,
+    "year_range":"2078-2122"
+  },
+  {
+    "designation":"2025 SQ4",
+    "fullname":"(2025 SQ4)",
+    "impact_probability":0.0006142177,
+    "diameter_km":0.018,
+    "palermo_scale_max":-4.55,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.7489049586,
+    "year_range":"2103-2125"
+  },
+  {
+    "designation":"2021 EL3",
+    "fullname":"(2021 EL3)",
+    "impact_probability":0.0006105588,
+    "diameter_km":0.0059,
+    "palermo_scale_max":-5.79,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.3892603045,
+    "year_range":"2088-2122"
+  },
+  {
+    "designation":"2026 HF2",
+    "fullname":"(2026 HF2)",
+    "impact_probability":0.0006094501,
+    "diameter_km":0.01,
+    "palermo_scale_max":-4.5,
+    "torino_scale_max":0,
+    "velocity_inf_kms":17.9093433439,
+    "year_range":"2098-2124"
+  },
+  {
+    "designation":"2020 KD3",
+    "fullname":"(2020 KD3)",
+    "impact_probability":0.0005988459,
+    "diameter_km":0.017,
+    "palermo_scale_max":-4.1,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.9302093144,
+    "year_range":"2083-2104"
+  },
+  {
+    "designation":"2016 EO28",
+    "fullname":"(2016 EO28)",
+    "impact_probability":0.0005973731,
+    "diameter_km":0.0051,
+    "palermo_scale_max":-4.65,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.9817589961,
+    "year_range":"2035-2065"
+  },
+  {
+    "designation":"101955",
+    "fullname":"101955 Bennu (1999 RQ36)",
+    "impact_probability":0.0005717,
+    "diameter_km":0.49,
+    "palermo_scale_max":-1.58,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.9916984432,
+    "year_range":"2178-2290"
+  },
+  {
+    "designation":"2019 SJ",
+    "fullname":"(2019 SJ)",
+    "impact_probability":0.0005682304,
+    "diameter_km":0.01,
+    "palermo_scale_max":-5.06,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.5156117414,
+    "year_range":"2082-2123"
+  },
+  {
+    "designation":"2022 BT",
+    "fullname":"(2022 BT)",
+    "impact_probability":0.0005563216,
+    "diameter_km":0.0038,
+    "palermo_scale_max":-6.18,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.8147948636,
+    "year_range":"2080-2122"
+  },
+  {
+    "designation":"2016 RD34",
+    "fullname":"(2016 RD34)",
+    "impact_probability":0.0005471922,
+    "diameter_km":0.011,
+    "palermo_scale_max":-4.77,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.12717611,
+    "year_range":"2051-2117"
+  },
+  {
+    "designation":"2021 AM6",
+    "fullname":"(2021 AM6)",
+    "impact_probability":0.0005282558,
+    "diameter_km":0.016,
+    "palermo_scale_max":-4.5,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.2111513731,
+    "year_range":"2064-2120"
+  },
+  {
+    "designation":"2024 RF10",
+    "fullname":"(2024 RF10)",
+    "impact_probability":0.0005260868,
+    "diameter_km":0.01,
+    "palermo_scale_max":-4.88,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.7667966038,
+    "year_range":"2092-2118"
+  },
+  {
+    "designation":"2024 XS8",
+    "fullname":"(2024 XS8)",
+    "impact_probability":0.0005237157,
+    "diameter_km":0.00606,
+    "palermo_scale_max":-5.83,
+    "torino_scale_max":0,
+    "velocity_inf_kms":9.0274250605,
+    "year_range":"2089-2122"
+  },
+  {
+    "designation":"2023 XE3",
+    "fullname":"(2023 XE3)",
+    "impact_probability":0.000513642,
+    "diameter_km":0.011,
+    "palermo_scale_max":-4.61,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.0087976426,
+    "year_range":"2053-2122"
+  },
+  {
+    "designation":"2019 SX",
+    "fullname":"(2019 SX)",
+    "impact_probability":0.000513187,
+    "diameter_km":0.0041,
+    "palermo_scale_max":-5.63,
+    "torino_scale_max":0,
+    "velocity_inf_kms":14.4334105088,
+    "year_range":"2046-2125"
+  },
+  {
+    "designation":"2007 HB15",
+    "fullname":"(2007 HB15)",
+    "impact_probability":0.0005112443,
+    "diameter_km":0.0096,
+    "palermo_scale_max":-4.83,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.3449572424,
+    "year_range":"2050-2122"
+  },
+  {
+    "designation":"2018 NW",
+    "fullname":"(2018 NW)",
+    "impact_probability":0.0004916196,
+    "diameter_km":0.0092,
+    "palermo_scale_max":-5.26,
+    "torino_scale_max":0,
+    "velocity_inf_kms":21.1382947764,
+    "year_range":"2046-2122"
+  },
+  {
+    "designation":"2025 UC6",
+    "fullname":"(2025 UC6)",
+    "impact_probability":0.0004841941,
+    "diameter_km":0.0042,
+    "palermo_scale_max":-6.56,
+    "torino_scale_max":0,
+    "velocity_inf_kms":4.5682526859,
+    "year_range":"2076-2125"
+  },
+  {
+    "designation":"2021 XV",
+    "fullname":"(2021 XV)",
+    "impact_probability":0.0004805886,
+    "diameter_km":0.0033,
+    "palermo_scale_max":-5.4,
+    "torino_scale_max":0,
+    "velocity_inf_kms":10.7596491731,
+    "year_range":"2045-2071"
+  },
+  {
+    "designation":"2016 NK22",
+    "fullname":"(2016 NK22)",
+    "impact_probability":0.000470548,
+    "diameter_km":0.0055,
+    "palermo_scale_max":-5.83,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.8777018044,
+    "year_range":"2084-2122"
+  },
+  {
+    "designation":"2011 EB74",
+    "fullname":"(2011 EB74)",
+    "impact_probability":0.0004641758,
+    "diameter_km":0.0137,
+    "palermo_scale_max":-5.14,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.4781273936,
+    "year_range":"2051-2113"
+  },
+  {
+    "designation":"2023 DO",
+    "fullname":"(2023 DO)",
+    "impact_probability":0.0004549104,
+    "diameter_km":0.026,
+    "palermo_scale_max":-3.57,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.9697186805,
+    "year_range":"2057-2092"
+  },
+  {
+    "designation":"2025 DT2",
+    "fullname":"(2025 DT2)",
+    "impact_probability":0.0004428581,
+    "diameter_km":0.016,
+    "palermo_scale_max":-3.77,
+    "torino_scale_max":0,
+    "velocity_inf_kms":9.7399653018,
+    "year_range":"2044-2071"
+  },
+  {
+    "designation":"2013 VW13",
+    "fullname":"(2013 VW13)",
+    "impact_probability":0.000439084,
+    "diameter_km":0.019,
+    "palermo_scale_max":-4.02,
+    "torino_scale_max":0,
+    "velocity_inf_kms":16.349989119,
+    "year_range":"2063-2095"
+  },
+  {
+    "designation":"2021 RB6",
+    "fullname":"(2021 RB6)",
+    "impact_probability":0.0004298335,
+    "diameter_km":0.0086,
+    "palermo_scale_max":-4.94,
+    "torino_scale_max":0,
+    "velocity_inf_kms":9.2291389846,
+    "year_range":"2075-2117"
+  },
+  {
+    "designation":"2007 UN12",
+    "fullname":"(2007 UN12)",
+    "impact_probability":0.000395709,
+    "diameter_km":0.0059,
+    "palermo_scale_max":-6.16,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.5672916702,
+    "year_range":"2089-2122"
+  },
+  {
+    "designation":"2020 XF",
+    "fullname":"(2020 XF)",
+    "impact_probability":0.0003923426,
+    "diameter_km":0.015,
+    "palermo_scale_max":-5.18,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.2737070736,
+    "year_range":"2056-2122"
+  },
+  {
+    "designation":"2017 SA20",
+    "fullname":"(2017 SA20)",
+    "impact_probability":0.0003870722,
+    "diameter_km":0.0072,
+    "palermo_scale_max":-6.32,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.8689109809,
+    "year_range":"2027-2126"
+  },
+  {
+    "designation":"2022 SD9",
+    "fullname":"(2022 SD9)",
+    "impact_probability":0.0003864265,
+    "diameter_km":0.0072,
+    "palermo_scale_max":-5.26,
+    "torino_scale_max":0,
+    "velocity_inf_kms":13.4229057635,
+    "year_range":"2100-2126"
+  },
+  {
+    "designation":"2024 GZ5",
+    "fullname":"(2024 GZ5)",
+    "impact_probability":0.0003791369,
+    "diameter_km":0.003,
+    "palermo_scale_max":-6.57,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.6959622919,
+    "year_range":"2112-2124"
+  },
+  {
+    "designation":"2013 HL167",
+    "fullname":"(2013 HL167)",
+    "impact_probability":0.0003786263,
+    "diameter_km":0.00939,
+    "palermo_scale_max":-5.37,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.9328992221,
+    "year_range":"2053-2125"
+  },
+  {
+    "designation":"2022 YS6",
+    "fullname":"(2022 YS6)",
+    "impact_probability":0.000367127,
+    "diameter_km":0.015,
+    "palermo_scale_max":-4.29,
+    "torino_scale_max":0,
+    "velocity_inf_kms":10.0402046898,
+    "year_range":"2065-2078"
+  },
+  {
+    "designation":"2021 CC7",
+    "fullname":"(2021 CC7)",
+    "impact_probability":0.0003640131,
+    "diameter_km":0.0039,
+    "palermo_scale_max":-6.1,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.9899773181,
+    "year_range":"2100-2118"
+  },
+  {
+    "designation":"2011 MD",
+    "fullname":"(2011 MD)",
+    "impact_probability":0.0003618449,
+    "diameter_km":0.0084,
+    "palermo_scale_max":-6.12,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.4884892205,
+    "year_range":"2098-2124"
+  },
+  {
+    "designation":"2021 XU5",
+    "fullname":"(2021 XU5)",
+    "impact_probability":0.0003617136,
+    "diameter_km":0.0047,
+    "palermo_scale_max":-5.4,
+    "torino_scale_max":0,
+    "velocity_inf_kms":19.0810378551,
+    "year_range":"2040-2112"
+  },
+  {
+    "designation":"2009 BE",
+    "fullname":"(2009 BE)",
+    "impact_probability":0.0003583969,
+    "diameter_km":0.02,
+    "palermo_scale_max":-4.36,
+    "torino_scale_max":0,
+    "velocity_inf_kms":11.4597782505,
+    "year_range":"2037-2122"
+  },
+  {
+    "designation":"2025 BA1",
+    "fullname":"(2025 BA1)",
+    "impact_probability":0.0003541601,
+    "diameter_km":0.01,
+    "palermo_scale_max":-3.76,
+    "torino_scale_max":0,
+    "velocity_inf_kms":13.3699073983,
+    "year_range":"2032-2116"
+  },
+  {
+    "designation":"2021 WA1",
+    "fullname":"(2021 WA1)",
+    "impact_probability":0.00035317,
+    "diameter_km":0.01,
+    "palermo_scale_max":-4.94,
+    "torino_scale_max":0,
+    "velocity_inf_kms":13.882501345,
+    "year_range":"2116-2117"
+  },
+  {
+    "designation":"2022 SA11",
+    "fullname":"(2022 SA11)",
+    "impact_probability":0.0003508453,
+    "diameter_km":0.0062,
+    "palermo_scale_max":-5.57,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.5484916476,
+    "year_range":"2076-2121"
+  },
+  {
+    "designation":"29075",
+    "fullname":"29075 (1950 DA)",
+    "impact_probability":0.0003401,
+    "diameter_km":1.3,
+    "palermo_scale_max":-0.98,
+    "torino_scale_max":0,
+    "velocity_inf_kms":14.1,
+    "year_range":"2880-2880"
+  },
+  {
+    "designation":"2024 AZ3",
+    "fullname":"(2024 AZ3)",
+    "impact_probability":0.000338744,
+    "diameter_km":0.006,
+    "palermo_scale_max":-5.84,
+    "torino_scale_max":0,
+    "velocity_inf_kms":9.876916344,
+    "year_range":"2089-2123"
+  },
+  {
+    "designation":"2017 SF20",
+    "fullname":"(2017 SF20)",
+    "impact_probability":0.0003350604,
+    "diameter_km":0.007,
+    "palermo_scale_max":-4.37,
+    "torino_scale_max":0,
+    "velocity_inf_kms":10.4399999755,
+    "year_range":"2034-2061"
+  },
+  {
+    "designation":"2024 TK5",
+    "fullname":"(2024 TK5)",
+    "impact_probability":0.0003347,
+    "diameter_km":0.0099,
+    "palermo_scale_max":-3.45,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.93,
+    "year_range":"2028-2028"
+  },
+  {
+    "designation":"2020 UO4",
+    "fullname":"(2020 UO4)",
+    "impact_probability":0.0003293626,
+    "diameter_km":0.0064,
+    "palermo_scale_max":-5.95,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.2186351081,
+    "year_range":"2105-2122"
+  },
+  {
+    "designation":"2021 DR",
+    "fullname":"(2021 DR)",
+    "impact_probability":0.0003291517,
+    "diameter_km":0.0095,
+    "palermo_scale_max":-5.58,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.4381185168,
+    "year_range":"2046-2122"
+  },
+  {
+    "designation":"2025 SH6",
+    "fullname":"(2025 SH6)",
+    "impact_probability":0.0003278009,
+    "diameter_km":0.0058,
+    "palermo_scale_max":-5.92,
+    "torino_scale_max":0,
+    "velocity_inf_kms":1.7424630896,
+    "year_range":"2103-2125"
+  },
+  {
+    "designation":"2015 KG158",
+    "fullname":"(2015 KG158)",
+    "impact_probability":0.0003255604,
+    "diameter_km":0.0074,
+    "palermo_scale_max":-5.35,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.6931042791,
+    "year_range":"2045-2122"
+  },
+  {
+    "designation":"2012 DJ54",
+    "fullname":"(2012 DJ54)",
+    "impact_probability":0.0003248154,
+    "diameter_km":0.0069,
+    "palermo_scale_max":-5.82,
+    "torino_scale_max":0,
+    "velocity_inf_kms":5.4276091047,
+    "year_range":"2068-2122"
+  },
+  {
+    "designation":"2025 WD10",
+    "fullname":"(2025 WD10)",
+    "impact_probability":0.0003233127,
+    "diameter_km":0.016,
+    "palermo_scale_max":-4.7,
+    "torino_scale_max":0,
+    "velocity_inf_kms":7.4846040354,
+    "year_range":"2055-2122"
+  },
+  {
+    "designation":"2025 FC1",
+    "fullname":"(2025 FC1)",
+    "impact_probability":0.0003208704,
+    "diameter_km":0.00981,
+    "palermo_scale_max":-4.84,
+    "torino_scale_max":0,
+    "velocity_inf_kms":18.6403157473,
+    "year_range":"2103-2113"
+  },
+  {
+    "designation":"2022 BY39",
+    "fullname":"(2022 BY39)",
+    "impact_probability":0.0003177846,
+    "diameter_km":0.0035,
+    "palermo_scale_max":-6.31,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.5200268673,
+    "year_range":"2107-2118"
+  },
+  {
+    "designation":"2018 GR4",
+    "fullname":"(2018 GR4)",
+    "impact_probability":0.0003166316,
+    "diameter_km":0.013,
+    "palermo_scale_max":-4.63,
+    "torino_scale_max":0,
+    "velocity_inf_kms":2.6000535742,
+    "year_range":"2058-2121"
+  },
+  {
+    "designation":"2018 TY4",
+    "fullname":"(2018 TY4)",
+    "impact_probability":0.0003116207,
+    "diameter_km":0.008,
+    "palermo_scale_max":-4.19,
+    "torino_scale_max":0,
+    "velocity_inf_kms":10.6699953411,
+    "year_range":"2033-2060"
+  },
+  {
+    "designation":"2025 SK22",
+    "fullname":"(2025 SK22)",
+    "impact_probability":0.000311153,
+    "diameter_km":0.018,
+    "palermo_scale_max":-4.29,
+    "torino_scale_max":0,
+    "velocity_inf_kms":8.7771290075,
+    "year_range":"2076-2125"
+  },
+  {
+    "designation":"2016 DK1",
+    "fullname":"(2016 DK1)",
+    "impact_probability":0.0003031206,
+    "diameter_km":0.011,
+    "palermo_scale_max":-5.01,
+    "torino_scale_max":0,
+    "velocity_inf_kms":6.873191781,
+    "year_range":"2043-2122"
+  },
+  {
+    "designation":"2025 YB4",
+    "fullname":"(2025 YB4)",
+    "impact_probability":0.0002985044,
+    "diameter_km":0.00551,
+    "palermo_scale_max":-5.85,
+    "torino_scale_max":0,
+    "velocity_inf_kms":16.3698085282,
+    "year_range":"2110-2122"
+  },
+  {
+    "designation":"2026 RZ",
+    "fullname":"(2026 RZ)",
+    "impact_probability":0.0002958006,
+    "diameter_km":0.0043,
+    "palermo_scale_max":-5.83,
+    "torino_scale_max":0,
+    "velocity_inf_kms":11.0100195939,
+    "year_range":"2086-2094"
+  },
+  {
+    "designation":"2010 UY7",
+    "fullname":"(2010 UY7)",
+    "impact_probability":0.0002922699,
+    "diameter_km":0.0067,
+    "palermo_scale_max":-6.04,
+    "torino_scale_max":0,
+    "velocity_inf_kms":3.8798170228,
+    "year_range":"2066-2125"
+  }
+]
