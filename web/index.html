@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Is It a Meteor Shower? — The Documentary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+
+  <!-- ===== BACKGROUND VIDEO (NASA & Eyewitness Assets) ===== -->
+  <div class="video-background-wrap">
+    <video id="bg-video" class="video-background" autoplay muted loop playsinline poster="../assets/images/chelyabinsk_meteor_panorama_02.webp">
+      <source src="../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4" type="video/mp4">
+    </video>
+    <div class="video-background-overlay"></div>
+  </div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav-bar">
+    <span class="nav-logo">☄️ Is It a Meteor Shower?</span>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">The Documentary</a>
+      <a class="nav-link" href="map.html">Treasure Map</a>
+      <a class="nav-link" href="simulator.html">Drop a Meteor!</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <h1>Is It a Meteor Shower?</h1>
+    <p class="subtitle">Uncovering NASA's Meteorite Trends &amp; Impact Risks — A Data-Driven Documentary</p>
+    <p class="text-muted mt-1" style="font-size:.85rem">NASA Space Apps Challenge 2026 · Be An Earth System Trend Detective!</p>
+    
+    <!-- Video Footage Switcher -->
+    <div class="btn-group mt-2" style="z-index:10">
+      <button class="btn btn-sm btn-secondary active" id="btn-vid-flash">⚡ Eyewitness Flash Footage</button>
+      <button class="btn btn-sm btn-secondary" id="btn-vid-orbit">🛰️ Meteor Orbit Trajectory</button>
+    </div>
+
+    <a href="#clue1" class="scroll-hint" aria-label="Scroll down">↓</a>
+  </section>
+
+  <!-- ===== CLUE 1: The 1970s Mystery Surge ===== -->
+  <section class="section-parallax" id="clue1">
+    <div class="reveal">
+      <span class="section-label">Clue #1</span>
+      <h2>The 1970s Mystery Surge</h2>
+      <p class="subtitle">From 136 finds in the 1900s to 9,061 in the 1990s — a <strong style="color:var(--danger)">66.6×</strong> explosion. Is Earth under attack?</p>
+    </div>
+    <div class="chart-wrap reveal" id="chart-decades">
+      <canvas id="canvas-decades"></canvas>
+    </div>
+    <div class="verdict reveal" id="verdict1"></div>
+  </section>
+
+  <!-- ===== CLUE 2: Heavy Metal vs Space Pebbles ===== -->
+  <section class="section-parallax" id="clue2">
+    <div class="reveal">
+      <span class="section-label">Clue #2</span>
+      <h2>Heavy Metal vs. Space Pebbles</h2>
+      <p class="subtitle">Not all space rocks are created equal. What are they made of — and does composition determine destruction?</p>
+    </div>
+    <div class="card-grid reveal" id="material-cards"></div>
+    <div class="chart-wrap reveal mt-2" id="chart-materials">
+      <canvas id="canvas-materials"></canvas>
+    </div>
+    <div class="verdict reveal" id="verdict2"></div>
+  </section>
+
+  <!-- ===== CLUE 3: AI Detective ===== -->
+  <section class="section-parallax" id="clue3">
+    <div class="reveal">
+      <span class="section-label">Clue #3</span>
+      <h2>The AI Detective</h2>
+      <p class="subtitle">A Random Forest classifier with <strong class="text-accent">98.61% accuracy</strong> reveals WHERE determines WHEN a meteorite is found.</p>
+    </div>
+    <div class="chart-wrap reveal" id="chart-features">
+      <canvas id="canvas-features"></canvas>
+    </div>
+    <div class="reveal mt-2" id="ml-stats"></div>
+    <div class="card-grid reveal mt-2" id="cluster-cards"></div>
+  </section>
+
+  <!-- ===== CONCLUSION ===== -->
+  <section class="section-parallax" id="conclusion" style="text-align:center">
+    <div class="reveal">
+      <h2>The Verdict Is In</h2>
+      <p class="subtitle" style="margin:1rem auto">Earth is <em>not</em> being bombarded more frequently. The surge is a human search bias — not a cosmic threat increase. But the real danger is still out there.</p>
+      <div class="btn-group" style="justify-content:center; margin-top:2rem">
+        <a class="btn btn-secondary" href="map.html">🗺️ Explore the Treasure Map</a>
+        <a class="btn btn-primary" href="simulator.html">💥 Drop a Meteor!</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/page1.js"></script>
+</body>
+</html>

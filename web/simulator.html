@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drop a Meteor! — Is It a Meteor Shower?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav-bar">
+    <span class="nav-logo">☄️ Is It a Meteor Shower?</span>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">The Documentary</a>
+      <a class="nav-link" href="map.html">Treasure Map</a>
+      <a class="nav-link" href="simulator.html">Drop a Meteor!</a>
+    </div>
+  </nav>
+
+  <!-- ===== SIMULATOR PAGE ===== -->
+  <div class="map-page">
+
+    <!-- Control Panel -->
+    <aside class="control-panel">
+      <h3>💥 Drop a Meteor!</h3>
+
+      <!-- Target -->
+      <div class="control-section">
+        <h4>📍 Target</h4>
+        <label class="field-label">City Preset</label>
+        <select id="city-select"><option value="">— or click the map —</option></select>
+        <p class="text-muted mt-1" style="font-size:.75rem">Lat: <span id="lbl-lat">-6.20</span> · Lng: <span id="lbl-lng">106.85</span></p>
+      </div>
+
+      <!-- Meteoroid -->
+      <div class="control-section">
+        <h4>☄️ Meteoroid</h4>
+
+        <label class="field-label">Mass</label>
+        <input type="range" id="mass-slider" min="0" max="100" value="30" step="0.1">
+        <div class="slider-value" id="mass-display">32.49 kg</div>
+
+        <label class="field-label mt-1">Entry Velocity</label>
+        <input type="range" id="velocity-slider" min="5000" max="72000" value="17000" step="100">
+        <div class="slider-value" id="velocity-display">17.0 km/s</div>
+
+        <label class="field-label mt-1">Material</label>
+        <select id="material-select"></select>
+        <p class="text-muted mt-1" style="font-size:.75rem" id="material-info"></p>
+      </div>
+
+      <!-- Asteroid Presets -->
+      <div class="control-section">
+        <h4>🛰️ Real Asteroid Preset</h4>
+        <select id="asteroid-select"><option value="">— select an asteroid —</option></select>
+      </div>
+
+      <!-- Drop Button -->
+      <button class="btn btn-primary w-full" id="btn-drop" style="font-size:1.1rem; padding:.8rem">
+        💥 Drop It!
+      </button>
+
+      <!-- Results -->
+      <div class="results-card hidden" id="results-card">
+        <h4 style="color:var(--accent); margin-bottom:.75rem">Impact Analysis</h4>
+        <div id="results-body"></div>
+      </div>
+
+      <!-- DART Deflection -->
+      <div class="control-section">
+        <div class="collapsible-header open">
+          <h4 style="margin:0">🚀 DART Deflection</h4>
+        </div>
+        <div class="collapsible-body open">
+          <label class="field-label mt-1">Delta-V (m/s)</label>
+          <input type="number" id="dart-dv" value="0.01" min="0.001" max="1" step="0.001">
+          <label class="field-label mt-1">Warning Time (days)</label>
+          <input type="number" id="dart-days" value="30" min="1" max="3650" step="1">
+          <button class="btn btn-secondary w-full mt-1" id="btn-dart">Calculate Deflection</button>
+          <div class="text-muted mt-1" id="dart-result" style="font-size:.85rem"></div>
+        </div>
+      </div>
+
+      <!-- Real Atmospheric Breakup Video -->
+      <div class="control-section">
+        <div class="collapsible-header">
+          <h4 style="margin:0">📹 Real Airburst Footage</h4>
+        </div>
+        <div class="collapsible-body">
+          <video controls muted playsinline style="width:100%; border-radius:8px; margin-top:.5rem" poster="../assets/images/chelyabinsk_meteor_trail_01.webp">
+            <source src="../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4" type="video/mp4">
+          </video>
+          <p class="text-muted mt-1" style="font-size:.75rem">Real footage comparison: 90.8% of meteoroids explode in the upper atmosphere rather than impacting the ground as surface craters.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Map -->
+    <div class="sim-map-container" id="sim-map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/page3.js"></script>
+</body>
+</html>
