@@ -1,0 +1,53 @@
+THE CHELYABINSK METEOR: SUPERBOLIDE EVENT OVER RUSSIA
+Source URL: https://earthsky.org/?p=279324
+Publisher: EarthSky
+
+================================================================================
+INTRODUCTION: A MORNING SUPERBOLIDE SHAKES THE WORLD
+================================================================================
+In the terminology of meteor astronomy, a "fireball" is defined as any exceptionally bright meteor that matches or exceeds the apparent magnitude of planet Venus (magnitude -4). A "bolide" is a fireball that explodes in a terminal atmospheric flash, often accompanied by sonic booms. But when an incoming meteoroid reaches an extraordinary apparent magnitude—outshining the full Moon (magnitude -12.7) or even rivaling the brilliance of the midday Sun (magnitude -26.7)—astronomers classify the phenomenon as a "superbolide."
+
+On February 15, 2013, the skies over the Russian southern Urals witnessed the most intensely documented superbolide in human history. The Chelyabinsk meteor pierced Earth's upper atmosphere, transforming the freezing morning darkness into an ethereal daytime brightness, leaving a massive bifurcated condensation trail suspended in the stratosphere and unleashing acoustic shocks that shattered the tranquility of several Russian industrial cities.
+
+================================================================================
+ORBITAL RECONSTRUCTION: TRACING THE CELESTIAL VOYAGE
+================================================================================
+Because Russia has one of the world's highest concentrations of automobile dashboard cameras (dashcams)—installed by motorists for insurance liability documentation—the Chelyabinsk meteor became the most comprehensively filmed astronomical impact in history. Within days of the event, astronomers gathered hundreds of dashcam videos, security camera feeds, and satellite images to calculate the meteoroid's pre-impact orbital parameters with unprecedented accuracy:
+
+- Origin: The meteoroid was identified as an Apollo-class asteroid, an asteroid whose perihelion (closest point to the Sun) lies within Earth's orbital path.
+- Orbital Trajectory: The asteroid had an orbital period of roughly 1,400 days (approx. 3.8 years) around the Sun, with an aphelion (farthest point) reaching outward toward the main asteroid belt between Mars and Jupiter.
+- Prior Collision History: Geochemical and mineralogical analyses of recovered fragments indicate that the Chelyabinsk parent body experienced intense shock metamorphism and collisional disruption roughly 290 million years ago, followed by another significant breakup event several million years ago before separating into the fragment that intersected Earth's orbit on February 15, 2013.
+
+================================================================================
+PHYSICAL AND METEOROLOGICAL CHARACTERISTICS
+================================================================================
+- Initial Dimensions: Approximately 19 meters across (about 62 feet), with a mass estimated at 12,000 to 13,000 metric tons.
+- Entry Speed: Approximately 19 kilometers per second (42,500 miles per hour).
+- Entry Angle: Extremely shallow, descending at 18.3 degrees above the local horizon from east-southeast to west-northwest.
+- Height of Superbolide Flash: The peak optical brightness occurred at an altitude of approximately 29.7 kilometers (18.5 miles) above ground level.
+- Maximum Brightness: The maximum apparent visual magnitude reached approximately -27.3. For several seconds, the fireball was approximately 30 times brighter than the Sun, casting sharp, moving shadows across the snowy landscape and causing temporary flash-blindness and minor sunburn-like retinal and dermal irritation to outdoor observers.
+
+================================================================================
+THE GLOBAL ATMOSPHERIC DUST PLUME
+================================================================================
+While ground observers were captivated by the immediate explosion and shockwaves, Earth-observing environmental satellites documented an extraordinary atmospheric aftermath. 
+
+NASA's Suomi National Polar-orbiting Partnership (Suomi NPP) satellite, equipped with the Ozone Mapping and Profiler Suite (OMPS) and the Visible Infrared Imaging Radiometer Suite (VIIRS), tracked the persistent stratospheric aerosol plume injected by the ablated meteoroid:
+1. Stratospheric Injection: The intense thermal vaporization of the meteoroid created hundreds of tons of microscopic silicate particles, vapor, and soot, which rose rapidly as a buoyant thermal updraft into the middle and upper stratosphere (between 30 and 40 kilometers altitude).
+2. Rapid Atmospheric Transport: High-altitude stratospheric jet streams rapidly caught the dust cloud, transporting it eastward across Siberia, over the North Pacific Ocean, across North America, over the Atlantic Ocean, and back across Europe.
+3. Global Circumnavigation: Within just four days (96 hours) of the initial explosion, the Chelyabinsk aerosol plume had completed a full 360-degree circumnavigation of the entire Northern Hemisphere. The event provided atmospheric scientists with an unprecedented real-world natural tracer experiment to validate stratospheric wind models and aerosol transport simulations.
+
+================================================================================
+RECOVERY AND ANALYSIS OF FRAGMENTS: LAKE CHEBARKUL
+================================================================================
+Following the explosion, the remaining mass underwent aerodynamic drag deceleration, entering the "dark flight" phase where ablation ceased and fragments dropped along ballistic free-fall curves:
+
+- The Ice Hole: Fishermen at Lake Chebarkul, located 70 kilometers west of Chelyabinsk, discovered a circular hole approximately 8 meters in diameter drilled cleanly through 70 centimeters of solid surface ice.
+- Underwater Recovery: In October 2013, an engineering team utilizing deep-water suction pumps and flotation cranes hoisted a massive, mud-encrusted stony meteorite from the lake floor.
+- The Main Mass: Upon weighing, the main Chebarkul fragment registered approximately 654 kilograms (1,442 pounds). It broke into three large pieces during recovery and weighing operations due to preexisting structural fracture planes.
+- Scientific Composition: Classified rigorously as an LL5 ordinary chondrite with a shock stage of S4 and a weathering grade of W0 (unweathered due to immediate retrieval from freezing waters). It contained prominent dark shock veins, melt pockets, and pristine chondrules set within a light-colored silicate matrix.
+
+================================================================================
+EDUCATIONAL AND SCIENTIFIC LEGACY
+================================================================================
+The Chelyabinsk superbolide demonstrated the extraordinary power of crowd-sourced citizen science combined with institutional satellite observations. By correlating civilian dashboard camera time-stamps, shadow-casting calculations, infrasound acoustic arrays operated by the Comprehensive Nuclear-Test-Ban Treaty Organization (CTBTO), and laboratory micro-CT scans of retrieved stones, the event generated one of the most comprehensive datasets in modern meteoritics, providing invaluable baseline metrics for predicting future asteroid entry phenomena.
