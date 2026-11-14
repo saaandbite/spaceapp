@@ -77,17 +77,19 @@ Proyek ini menyelesaikan tiga masalah kritis sekaligus (Scientific, Civil Defens
 
 ---
 
-# **4\. Desain Arsitektur 3 Mode Aplikasi Web & Rumus Fisika Simulator**
+# **4\. Desain Arsitektur 3 Halaman Aplikasi Web & Rumus Fisika Simulator**
 
-## **Mode 1: "The Trend Detective" (Step-by-Step Mystery Clues)**
+> **Perubahan 14 Nov 2026:** aplikasi kini disusun sebagai 3 halaman — Halaman 1 parallax dokumenter, Halaman 2 Treasure Map, Halaman 3 Drop a Meteor! Simulator.
 
-Menggunakan format *carousel* 3 langkah (1 grafik per layar) agar bebas dari *information overload*:
+## **Halaman 1: Parallax Dokumenter Sejarah Meteor Jatuh ke Bumi (menggantikan "The Trend Detective")**
+
+Halaman pembuka berupa dokumenter sejarah meteor yang jatuh ke Bumi, diceritakan dengan efek *parallax* ala film dokumenter berdasarkan dataset yang dimiliki — bukan lagi sekadar carousel grafik dan angka. Angka-angka tetap ada di dalam cerita sebagai bagian dari narasi:
 
 * **Clue 1 (The 1970s Mystery Surge):** Grafik 12 dekade lengkap (1900s–2010s) dengan Dual Y-Axis yang memperlihatkan garis merah datar *Observed Falls* (54–88 per dekade) melawan lonjakan bar ekspedisi es Antarktika pasca-1970.  
 * **Clue 2 (Heavy Metal vs. Space Pebbles):** Perbandingan 4 kelas batuan lengkap dengan analogi berat benda sehari-hari (Grand Piano vs Laptop).  
 * **Clue 3 (AI Spotter & 5 Earth Zones):** Visualisasi Feature Importance Random Forest (AUC 0,9946) dan 5 klaster K-Means.
 
-## **Mode 2: "Treasure Map" (Global & Indonesia Spatial Explorer)**
+## **Halaman 2: "Treasure Map" (Global & Indonesia Spatial Explorer)**
 
 * Memetakan **511 pin terkurasi dari seluruh dunia** (150 meteorit terberat global seperti Hoba 60 ton, Cape York 58,2 ton, Campo del Cielo 50 ton, Canyon Diablo 30 ton, Sikhote-Alin 23 ton \+ sampel berstrata 5 klaster) dengan *coordinate jitter* (±0,15°) pada titik Antarktika agar tidak menumpuk di satu piksel.  
 * Menyediakan filter khusus **19 Meteorit Indonesia**, antara lain:  
@@ -98,7 +100,7 @@ Menggunakan format *carousel* 3 langkah (1 grafik per layar) agar bebas dari *in
   * **Meester-Cornelis** (Jatinegara Jakarta, 1915, Ordinary Chondrite H5, **24,75 kg**, Fell, 0,85 Ton TNT).  
   * Disertai Tjabe (20 kg), Tjerebon (16,5 kg), Bandong (11,5 kg), Tambakwatu (10,5 kg), Rembang (10 kg), Lovina Bali (8,2 kg), Kediri (3,3 kg), Kangean (1,63 kg), Cilimus (1,6 kg), Selakopi (1,59 kg), Ngawi (1,39 kg), Glanggang (1,3 kg), Banten (0,63 kg), dan Madiun (0,4 kg).
 
-## **Mode 3: "Drop a Meteor\! Simulator" (Real Map Impact & Mitigation Sandbox)**
+## **Halaman 3: "Drop a Meteor\! Simulator" (Real Map Impact & Mitigation Sandbox)**
 
 Menggunakan **Peta Interaktif Leaflet Asli** (pilihan mode Jalan Gelap & Citra Satelit) di mana pengguna dapat memilih kota target atau mengklik titik mana pun di peta:
 
@@ -121,7 +123,7 @@ Bagian ini disusun sebagai bahan diskusi tim untuk menentukan apakah akan memper
 
 ## **A. Ringkasan Sebelum Tambahan Dataset Baru (Versi Single Dataset Saat Ini)**
 
-Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah \-\> 31.911 data bersih) untuk menjawab tantangan Trend Detective dan mitigasi dampak. Pada Mode 1, model Random Forest (AUC 0,9946) dan K-Means (5 klaster) membuktikan bahwa jatuhan meteorit yang diamati manusia (Fell) selalu stabil 54–88 kejadian per dekade, sedangkan lonjakan pasca-1970 adalah bias ekspedisi es Antarktika. Pada Mode 2, sistem memetakan sebaran meteorit di seluruh dunia dari 5 klaster K-Means sekaligus menyediakan sorotan khusus untuk 19 meteorit Indonesia. Pada Mode 3, pengguna dapat menyimulasikan jatuhnya meteorit ke kota target di atas peta untuk melihat ketinggian pecah atmosfer (breakup altitude), tiga cincin radius bahaya dalam satuan meter/kilometer, protokol pertahanan sipil, serta simulasi defleksi DART.
+Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah \-\> 31.911 data bersih) untuk menjawab tantangan Trend Detective dan mitigasi dampak. Pada Halaman 1, model Random Forest (AUC 0,9946) dan K-Means (5 klaster) membuktikan bahwa jatuhan meteorit yang diamati manusia (Fell) selalu stabil 54–88 kejadian per dekade, sedangkan lonjakan pasca-1970 adalah bias ekspedisi es Antarktika. Pada Halaman 2, sistem memetakan sebaran meteorit di seluruh dunia dari 5 klaster K-Means sekaligus menyediakan sorotan khusus untuk 19 meteorit Indonesia. Pada Halaman 3, pengguna dapat menyimulasikan jatuhnya meteorit ke kota target di atas peta untuk melihat ketinggian pecah atmosfer (breakup altitude), tiga cincin radius bahaya dalam satuan meter/kilometer, protokol pertahanan sipil, serta simulasi defleksi DART.
 
 * **Keterbatasan Versi 1 Dataset:** Wilayah samudra di peta terlihat kosong karena tidak ada manusia yang memungut batu di dasar laut; simulator baru menghitung jarak fisik (meter/km) tanpa estimasi jumlah penduduk terdampak; dan simulasi roket DART memakai sampel batu historis berukuran kecil.
 
@@ -129,9 +131,9 @@ Sistem mengolah satu dataset utama (NASA Meteorite Landings: 45.716 data mentah 
 
 | Sumber Data Tambahan | Integrasi Fitur di Aplikasi | Nilai Tambah Scientific & UX |
 | :---- | :---- | :---- |
-| **NASA CNEOS Fireballs & Bolide Data** | Mode 1 & Mode 2 (Sebaran titik ledakan bola api satelit 1988–sekarang) | Membuktikan secara visual bahwa 70% meteor meledak di laut. Menambahkan kasus historis **Bolide Bone (Sulut, 2009\)** energi 33 kt TNT di alt 19 km. |
-| **NASA SEDAC Population Density** | Mode 3 (Overlay kepadatan penduduk per km² pada radius dampak) | Memberikan **estimasi kuantitatif jumlah warga** yang berada di dalam radius *window shatter* (\>1 psi) dan *airblast*. |
-| **NASA NeoWs API (Live Feed)** | Mode 3 (Preset pilihan objek asteroid *real-time*) | Memungkinkan simulasi defleksi **NASA DART** pada asteroid nyata berukuran ratusan meter secara presisi. |
+| **NASA CNEOS Fireballs & Bolide Data** | Halaman 1 & Halaman 2 (Sebaran titik ledakan bola api satelit 1988–sekarang) | Membuktikan secara visual bahwa 70% meteor meledak di laut. Menambahkan kasus historis **Bolide Bone (Sulut, 2009\)** energi 33 kt TNT di alt 19 km. |
+| **NASA SEDAC Population Density** | Halaman 3 (Overlay kepadatan penduduk per km² pada radius dampak) | Memberikan **estimasi kuantitatif jumlah warga** yang berada di dalam radius *window shatter* (\>1 psi) dan *airblast*. |
+| **NASA NeoWs API (Live Feed)** | Halaman 3 (Preset pilihan objek asteroid *real-time*) | Memungkinkan simulasi defleksi **NASA DART** pada asteroid nyata berukuran ratusan meter secara presisi. |
 
 ---
 
