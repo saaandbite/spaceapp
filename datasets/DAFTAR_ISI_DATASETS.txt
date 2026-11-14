@@ -1,0 +1,147 @@
+================================================================================
+                    DAFTAR ISI & KATALOG DATASET (SPACEAPP 2026)
+                        Direktori: /home/saaandd/web/hacknasa/datasets
+================================================================================
+
+File ini mendokumentasikan seluruh berkas data yang digunakan dan dihasilkan 
+dalam proyek mitigasi serta analisis data sains meteorit & asteroid NASA.
+
+Semua dataset telah melalui tahapan Data Cleaning dan Data Transformation
+dengan standar skema baku:
+- Format Seragam Hasil Transformasi : CSV (.csv)
+- Standar Encoding                 : UTF-8
+- Standar Format Waktu Lintas Data : YYYY-MM-DD HH:MM:SS (UTC)
+- Standar Nama Koordinat           : latitude & longitude (derajat desimal bertanda)
+- Standar Penamaan Kolom           : snake_case semantik dengan satuan eksplisit
+
+--------------------------------------------------------------------------------
+1. DATASET MENTAH (RAW DATASETS)
+--------------------------------------------------------------------------------
+Lokasi: datasets/
+
+[1] Meteorite_Landings.csv
+    - Deskripsi : Rekaman historis global pendaratan & penemuan meteorit NASA.
+    - Ukuran    : ~3.9 MB
+    - Jumlah    : 45.716 baris mentah (10 kolom).
+    - Status    : Data mentah sebelum pembersihan (mengandung missing NaN, 
+                  6.186 anomali Null Island (0,0), dan anomali tahun >2026).
+    - Kegunaan  : Sumber data utama untuk analisis tren sains & Machine Learning.
+
+[2] cneos_fireball_data.csv
+    - Deskripsi : Rekaman bolide / bola api atmosferik dari jaringan sensor NASA CNEOS.
+    - Ukuran    : ~76 KB
+    - Jumlah    : 1.074 baris mentah.
+    - Status    : Data mentah dengan multi-index header dan koordinat teks kardinal 
+                  (format NSEW, misal 41.8S 173.1W).
+    - Kegunaan  : Validasi empiris ledakan bolide atmosferik (fenomena Chelyabinsk).
+
+[3] gpw_v4_population_density_rev10_2020_2pt5_min.tif
+    - Deskripsi : Raster spasial GeoTIFF NASA SEDAC (Gridded Population of the World v4)
+                  resolusi 2.5 arc-minute (~5 km di ekuator) proyeksi tahun 2020.
+    - Ukuran    : ~24 MB
+    - Kegunaan  : Sumber data spasial raster untuk estimasi kepadatan populasi global.
+
+[4] sedac_global_grid_lookup.json
+    - Deskripsi : Lookup grid terkompresi resolusi 0.5° x 0.5° hasil ekstraksi raster 
+                  GPWv4 oleh notebook preprocessing_population.ipynb.
+    - Ukuran    : ~950 KB
+    - Kegunaan  : Modul simulator web untuk menghitung estimasi dampak populasi terdampak 
+                  pada radius cincin bahaya impak meteorit secara real-time.
+
+--------------------------------------------------------------------------------
+2. SNAPSHOT RAW API NASA (API SNAPSHOTS)
+--------------------------------------------------------------------------------
+Lokasi: datasets/cneos_sentry/, datasets/sbdb_cad/, datasets/nasa_neows/
+Dihasilkan oleh: notebook/preprocessing_api_to_json.ipynb
+
+[1] datasets/cneos_sentry/sentry.json
+    - Deskripsi : Snapshot JSON pemantauan risiko tabrakan asteroid JPL CNEOS Sentry.
+    - Jumlah    : 2.251 objek asteroid berpotensi bahaya masa depan.
+    - Parameter : Skala bahaya Palermo (ps_max), skala Torino (ts_max), probabilitas 
+                  tabrakan (ip), rentang tahun, dan estimasi diameter.
+
+[2] datasets/sbdb_cad/cad.json
+    - Deskripsi : Snapshot JSON lintasan pendekatan jarak dekat asteroid JPL SBDB CAD.
+    - Jumlah    : 1.097 lintasan asteroid dekat Bumi (filter jarak <= 10 Lunar Distances).
+    - Parameter : Waktu pendekatan (cd), jarak nominal (dist AU), kecepatan relatif (v_rel),
+                  kecepatan tak hingga (v_inf), dan magnitudo absolut (h).
+
+[3] datasets/nasa_neows/feed.json
+    - Deskripsi : Snapshot API NASA NeoWs Feed 7 hari asteroid dekat Bumi.
+    - Jumlah    : 44 objek Near-Earth Asteroids dengan struktur nested JSON lengkap.
+    - Parameter : Rentang diameter (km/m/ft/mi), data pendekatan papasan (miss distance),
+                  dan indikator bahaya (is_potentially_hazardous_asteroid).
+
+[4] datasets/nasa_neows/browse.json
+    - Deskripsi : Snapshot API NASA NeoWs Browse katalog asteroid dekat Bumi secara umum.
+    - Parameter : Parameter orbit Keplerian, klasifikasi orbit, dan ringkasan fisik.
+
+--------------------------------------------------------------------------------
+3. DATASET HASIL TRANSFORMASI (TRANSFORMED & STANDARDIZED DATASETS)
+--------------------------------------------------------------------------------
+Lokasi: datasets/transformed/
+Dihasilkan oleh: notebook/pipeline_transformation.ipynb
+Standar: File CSV murni (.csv), UTF-8, Kolom Waktu 'datetime_utc' (YYYY-MM-DD HH:MM:SS)
+
+[1] meteorites_cleaned_transformed.csv
+    - Deskripsi     : Dataset utama meteorit global bersih dan tertransformasi.
+    - Dimensi       : 31.911 baris x 20 kolom (Retensi pembersihan: 69,80%).
+    - Fitur Utama   :
+      * Identitas   : name, id, nametype, recclass, fall_type, year, datetime_utc
+      * Spasial     : latitude, longitude, abs_latitude, decade
+      * Massa Fisik : mass_g, mass_kg, log10_mass_g, is_massive_outlier (>35 kg)
+      * Rekayasa ML : material_class (4 kelas batuan luar angkasa), density_g_cm3,
+                      yield_strength_mpa, impact_regime, is_fell
+    - Kegunaan      : Dataset input untuk pemodelan ML (K-Means Clustering & 
+                      Random Forest Classifier) dan visualisasi peta global.
+
+[2] indonesia_meteorites_transformed.csv
+    - Deskripsi     : Subset kurasi 19 rekaman resmi jatuhan meteorit di Indonesia
+                      (wilayah geografis -11.5° s/d 6.0° LS, 95.0° s/d 141.0° BT).
+    - Dimensi       : 19 baris x 21 kolom.
+    - Fitur Tambahan: energy_tons_tnt (estimasi energi kinetik hantaman pada v=17 km/s).
+    - Rekaman Kunci :
+      * Prambanan (1797, 500 kg, Iron/Stony-Iron, 17.27 Ton TNT)
+      * Jepara (2008, 499.5 kg, Pallasite Iron, 17.25 Ton TNT)
+      * Djati-Pengilon (1884, 166 kg, Ordinary Chondrite, 5.73 Ton TNT)
+      * Jumapalo (1984, 32.49 kg, Ordinary Chondrite, 1.12 Ton TNT)
+      * Meester-Cornelis (1915, 24.75 kg, Ordinary Chondrite, 0.85 Ton TNT)
+    - Kegunaan      : Katalog khusus visualisasi spasial mitigasi lokal Indonesia.
+
+[3] cneos_fireballs_transformed.csv
+    - Deskripsi     : Rekaman bola api / bolide atmosferik bersih dari CNEOS NASA.
+    - Dimensi       : 888 baris x 6 kolom.
+    - Kolom Standar : latitude, longitude, altitude_km, energy_joules, 
+                      energy_kilotons_tnt, datetime_utc.
+    - Kegunaan      : Komparasi empiris hantaman permukaan vs ledakan udara (airburst).
+
+[4] sentry_risks_transformed.csv
+    - Deskripsi     : Data risiko pemantauan dampak asteroid JPL Sentry flat table.
+    - Dimensi       : 2.251 baris x 9 kolom.
+    - Kolom Standar : designation, fullname, impact_probability, diameter_km,
+                      palermo_scale_max, torino_scale_max, velocity_inf_kms,
+                      year_range, datetime_utc.
+    - Kegunaan      : Analisis mitigasi asteroid berpotensi tabrakan jangka panjang.
+
+[5] cad_approaches_transformed.csv
+    - Deskripsi     : Rekaman lintasan pendekatan asteroid dekat Bumi (SBDB CAD).
+    - Dimensi       : 1.097 baris x 13 kolom.
+    - Kolom Standar : designation, orbit_id, jd, t_sigma_f, datetime_utc,
+                      distance_au, distance_min_au, distance_max_au, distance_ld,
+                      distance_km, velocity_rel_kms, velocity_inf_kms,
+                      absolute_magnitude_h.
+    - Kegunaan      : Peringatan dini pendekatan jarak dekat asteroid terhadap orbit Bumi.
+
+[6] neows_asteroids_transformed.csv
+    - Deskripsi     : Data Near-Earth Asteroids hasil flattening dari NASA NeoWs Feed.
+    - Dimensi       : 44 baris x 13 kolom.
+    - Kolom Standar : neo_id, name, designation, absolute_magnitude_h,
+                      is_potentially_hazardous, is_sentry_object, diameter_min_km,
+                      diameter_max_km, velocity_kms, distance_km, distance_ld,
+                      orbiting_body, datetime_utc.
+    - Kegunaan      : Pemantauan asteroid dekat Bumi aktif dengan parameter ukuran dan kecepatan.
+
+================================================================================
+Dibuat secara otomatis oleh Pipeline Data NASA - SpaceApp 2026
+Waktu Pembaruan Terakhir: 2026-11-14
+================================================================================

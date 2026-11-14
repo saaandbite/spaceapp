@@ -1,3 +1,6 @@
 .env
 venv/
 .ipynb_checkpoints/
+skills/
+notebook/skills/
+**/skills/
