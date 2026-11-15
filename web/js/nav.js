@@ -90,3 +90,18 @@ window.showLoadError = err => {
     });
   });
 })();
+
+  /* Mobile nav toggle (hamburger) */
+  document.querySelectorAll('.nav-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const links = btn.parentElement.querySelector('.nav-links');
+      if (!links) return;
+      const open = links.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+    const links = btn.parentElement.querySelector('.nav-links');
+    if (links) links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    }));
+  });
