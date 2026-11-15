@@ -185,7 +185,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18p
 .result-hero span:last-child { font-size: .8rem; color: var(--text-muted); }
 .airburst-pin { width: 28px; height: 28px; color: var(--accent); filter: drop-shadow(0 0 6px rgba(255,158,61,.9)); cursor: pointer; }
 .airburst-pin svg { width: 100%; height: 100%; }
-.maplibregl-popup .ring-dot, .leaflet-tooltip .ring-dot { display: inline-block; width: 10px; height: 10px; margin-right: .4rem; vertical-align: -1px; }
+.maplibregl-popup .ring-dot { display: inline-block; width: 10px; height: 10px; margin-right: .4rem; vertical-align: -1px; }
 
 /* --- Results --- */
 .results-card { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
@@ -211,17 +211,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18p
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
 .reveal.revealed { opacity: 1; transform: translateY(0); }
 
-/* --- Leaflet Overrides --- */
-.leaflet-container { background: var(--bg) !important; }
-.leaflet-popup-content-wrapper { background: var(--bg-card) !important; color: var(--text) !important; border-radius: var(--radius) !important; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 32px rgba(0,0,0,.5) !important; }
-.leaflet-popup-tip { background: var(--bg-card) !important; }
-.leaflet-tooltip { background: var(--bg-card); color: var(--text); border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(0,0,0,.5); }
-.leaflet-popup-content { font-family: var(--font-body); font-size: .85rem; line-height: 1.5; }
-.leaflet-popup-content b { color: var(--accent); }
-.leaflet-control-layers { background: var(--bg-glass) !important; color: var(--text) !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 8px !important; }
-.leaflet-control-zoom a { background: var(--bg-card) !important; color: var(--text) !important; border-color: rgba(255,255,255,.08) !important; }
-
-/* --- MapLibre Overrides (simulator globe) --- */
+/* --- MapLibre Overrides (globe on pages 2-3) --- */
 .maplibregl-map { background: #05050f; font-family: var(--font-body); }
 .maplibregl-popup-content { background: var(--bg-card); color: var(--text); border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 32px rgba(0,0,0,.5); font-size: .85rem; line-height: 1.5; }
 .maplibregl-popup-content b { color: var(--accent); }
