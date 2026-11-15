@@ -9,10 +9,11 @@
 
   /* ---------- helpers ---------- */
   const MATERIAL_COLORS = {
-    'Iron / Stony-Iron':      '#ff5252',
-    'Achondrite':              '#ffab40',
-    'Carbonaceous Chondrite':  '#69f0ae',
-    'Ordinary Chondrite':      '#4fc3f7'
+    // muted earth tones so the four classes stay apart without competing with the amber accent
+    'Iron / Stony-Iron':      '#e07a5f',
+    'Achondrite':              '#e9c46a',
+    'Carbonaceous Chondrite':  '#81b29a',
+    'Ordinary Chondrite':      '#9aa5b8'
   };
 
   /** Format mass smartly */
@@ -82,7 +83,7 @@
   /* ---------- populate global markers ---------- */
   pins.forEach(p => {
     const r = Math.max(3, Math.min(15, Math.log10(Math.max(p.mass_kg, 1)) * 3));
-    const color = MATERIAL_COLORS[p.material_class] || '#4fc3f7';
+    const color = MATERIAL_COLORS[p.material_class] || '#9aa5b8';
     const marker = L.circleMarker([p.latitude, p.longitude], {
       radius: r, fillColor: color, fillOpacity: 0.7,
       color: color, weight: 1, opacity: 0.9
@@ -118,8 +119,8 @@
   (Array.isArray(fireballsData) ? fireballsData : (fireballsData.fireballs || [])).forEach(f => {
     if (f.latitude == null || f.longitude == null) return;
     L.circleMarker([f.latitude, f.longitude], {
-      radius: 2.5, fillColor: '#ffab40', fillOpacity: 0.35,
-      color: '#ffab40', weight: 0.5, opacity: 0.5
+      radius: 2.5, fillColor: '#ff9e3d', fillOpacity: 0.35,
+      color: '#ff9e3d', weight: 0.5, opacity: 0.5
     }).bindPopup(`
       <b>Fireball</b><br>
       ${f.datetime_utc || ''}<br>
@@ -133,7 +134,7 @@
     L.marker([s.latitude, s.longitude], {
       icon: L.divIcon({
         className: '',
-        html: '<div style="font-size:1.6rem; text-shadow:0 0 10px rgba(255,171,64,.9); cursor:pointer">💥</div>',
+        html: '<div class="airburst-pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M18.2 5.8l-2.5 2.5M8.3 15.7l-2.5 2.5"/></svg></div>',
         iconSize: [28, 28], iconAnchor: [14, 14]
       }),
       title: s.name,
@@ -147,7 +148,7 @@
   });
 
   /* ---------- cluster overlays ---------- */
-  const CLUSTER_COLORS = ['#4fc3f7', '#4fc3f7', '#ffab40', '#69f0ae', '#ff8a65']; // same as page 1 cards
+  const CLUSTER_COLORS = ['#9aa5b8', '#9aa5b8', '#e9c46a', '#81b29a', '#e07a5f'];
   map.createPane('clusters').style.zIndex = 350; // below the pins (overlayPane = 400) so pins stay visible and clickable
   clustersData.clusters.forEach((c, i) => {
     const radiusM = Math.sqrt(c.count) * 10000; // area ~ record count; visible at world zoom
@@ -162,7 +163,7 @@
   function renderPinList(items, isIndo) {
     pinList.innerHTML = '';
     items.forEach(p => {
-      const color = MATERIAL_COLORS[p.material_class] || '#4fc3f7';
+      const color = MATERIAL_COLORS[p.material_class] || '#9aa5b8';
       const el = document.createElement('div');
       el.className = 'pin-item';
       el.innerHTML = `

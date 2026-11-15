@@ -207,7 +207,7 @@
     map.addLayer({ id: 'hazard-fill', type: 'fill', source: 'hazard', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': ['get', 'opacity'] } });
     map.addLayer({ id: 'hazard-line', type: 'line', source: 'hazard', paint: { 'line-color': ['get', 'color'], 'line-width': 2 } });
     map.addSource('dart', { type: 'geojson', data: EMPTY });
-    map.addLayer({ id: 'dart-line', type: 'line', source: 'dart', paint: { 'line-color': '#69f0ae', 'line-width': 3, 'line-dasharray': [2, 2] } });
+    map.addLayer({ id: 'dart-line', type: 'line', source: 'dart', paint: { 'line-color': '#81b29a', 'line-width': 3, 'line-dasharray': [2, 2] } });
     resolve();
   }));
 
@@ -233,7 +233,7 @@
 
   /* Target Marker */
   const targetEl = document.createElement('div');
-  targetEl.style.cssText = 'width:22px;height:22px;background:#ff5252;border:3px solid #fff;border-radius:50%;box-shadow:0 0 14px rgba(255,82,82,.9),0 0 24px rgba(255,82,82,.6);cursor:grab';
+  targetEl.style.cssText = 'width:22px;height:22px;background:#ff5a3c;border:3px solid #fff;border-radius:50%;box-shadow:0 0 14px rgba(255,90,60,.8);cursor:grab';
   targetEl.title = 'Impact Ground Zero';
 
   targetMarker = new maplibregl.Marker({ element: targetEl, draggable: true })
@@ -546,11 +546,11 @@
 
     /* Draw hazard rings (largest first so smaller rings sit on top) */
     const craterLabel = isAirburstStrewn ? 'Fragment Strewn Field (No Surface Crater)' : 'Surface Crater Zone';
-    const craterColor = isAirburstStrewn ? '#81d4fa' : '#ff5252';
+    const craterColor = isAirburstStrewn ? '#9aa5b8' : '#ff5a3c';
     hazardLayerGroup.setRings([
-      circlePolygon(currentLat, currentLng, rGlassM, { color: '#fff176', opacity: 0.12, label: `🟡 Window Shatter Zone: ${formatDistance(rGlassM)}` }),
-      circlePolygon(currentLat, currentLng, rBlastM, { color: '#ffab40', opacity: 0.22, label: `🟠 Severe Blast & Evacuation: ${formatDistance(rBlastM)}` }),
-      circlePolygon(currentLat, currentLng, Math.max(5, rCraterM), { color: craterColor, opacity: 0.45, label: `🔴 ${craterLabel}: ${formatDistance(rCraterM)}` })
+      circlePolygon(currentLat, currentLng, rGlassM, { color: '#fff176', opacity: 0.12, label: `<span class="ring-dot" style="background:#fff176"></span>Window Shatter Zone: ${formatDistance(rGlassM)}` }),
+      circlePolygon(currentLat, currentLng, rBlastM, { color: '#ffab40', opacity: 0.22, label: `<span class="ring-dot" style="background:#ffab40"></span>Severe Blast & Evacuation: ${formatDistance(rBlastM)}` }),
+      circlePolygon(currentLat, currentLng, Math.max(5, rCraterM), { color: craterColor, opacity: 0.45, label: `<span class="ring-dot" style="background:${craterColor}"></span>${craterLabel}: ${formatDistance(rCraterM)}` })
     ]);
 
     // On load the globe keeps spinning; on Drop It the camera flies from space down to the rings
@@ -573,13 +573,13 @@
     }
 
     resultsBody.innerHTML = `
-      <div class="result-row">
-        <span class="result-label">Kinetic Energy</span>
-        <span class="result-value text-accent">${eJoules.toExponential(2)} J</span>
+      <div class="result-hero">
+        <span class="num">${eTonsTNT < 1 ? eTonsTNT.toFixed(3) : eTonsTNT < 10 ? eTonsTNT.toFixed(2) : formatNumber(eTonsTNT)}</span>
+        <span>tons of TNT${energyComparison}</span>
       </div>
       <div class="result-row">
-        <span class="result-label">TNT Equivalent</span>
-        <span class="result-value text-warning">${eTonsTNT < 1 ? eTonsTNT.toFixed(3) : eTonsTNT < 10 ? eTonsTNT.toFixed(2) : formatNumber(eTonsTNT)} Tons TNT${energyComparison}</span>
+        <span class="result-label">Kinetic Energy</span>
+        <span class="result-value">${eJoules.toExponential(2)} J</span>
       </div>
       <div class="result-row">
         <span class="result-label">Entry Regime</span>
@@ -614,17 +614,17 @@
 
       <div class="mt-2" style="background:rgba(255,255,255,.03); padding:.6rem; border-radius:8px">
         <div class="result-row" style="border-bottom:none">
-          <span class="result-label">👥 People in blast zone (est.)</span>
+          <span class="result-label">People in blast zone (est.)</span>
           <span class="result-value text-danger" style="white-space:nowrap">${formatNumber(popBlast)}</span>
         </div>
         <div class="result-row" style="border-bottom:none">
-          <span class="result-label">🪟 People in glass-shatter zone (est.)</span>
+          <span class="result-label">People in glass-shatter zone (est.)</span>
           <span class="result-value text-warning" style="white-space:nowrap">${formatNumber(popGlass)}</span>
         </div>
       </div>
 
       <div class="verdict mt-2" style="margin:0.75rem 0 0 0; padding:.75rem 1rem; font-size:.8rem">
-        <b>🚨 Civil Defense Protocol:</b>
+        <b>Civil defense:</b>
         ${isAirburstStrewn
           ? 'Tropospheric airburst will produce high-velocity acoustic shockwave. Move away from glass windows immediately. Do NOT gaze at fireball. Lie prone on ground with head protected.'
           : 'Catastrophic ground impact with severe shockwave. Immediate evacuation mandatory within orange zone. Window protection protocol in yellow perimeter.'}
@@ -654,10 +654,10 @@
 
     // Deflected marker (green) and dashed trajectory-shift line
     const deflEl = document.createElement('div');
-    deflEl.style.cssText = 'width:18px;height:18px;background:#69f0ae;border:2px solid #fff;border-radius:50%;box-shadow:0 0 16px rgba(105,240,174,.9);cursor:pointer';
+    deflEl.style.cssText = 'width:18px;height:18px;background:#81b29a;border:2px solid #fff;border-radius:50%;box-shadow:0 0 12px rgba(129,178,154,.8);cursor:pointer';
     deflMarker = new maplibregl.Marker({ element: deflEl })
       .setLngLat([deflectedLng, deflectedLat])
-      .setPopup(new maplibregl.Popup({ offset: 12 }).setHTML(`<b>🚀 Deflected Impact Point</b><br>Shifted by <b>${shiftKm.toFixed(2)} km</b> away from ground zero!`))
+      .setPopup(new maplibregl.Popup({ offset: 12 }).setHTML(`<b>Deflected impact point</b><br>Shifted by <b>${shiftKm.toFixed(2)} km</b> away from ground zero!`))
       .addTo(map);
 
     mapReady.then(() => map.getSource('dart').setData({
@@ -668,7 +668,7 @@
     // Output explanation
     dartResult.innerHTML = `
       <div style="color:var(--success); font-weight:600; margin-top:.4rem">
-        🎯 Deflection Distance: ${shiftKm.toFixed(2)} km
+        Deflection distance: <span class="num">${shiftKm.toFixed(2)} km</span>
       </div>
       <p style="font-size:.78rem; margin-top:.2rem">
         By applying <b>${(deltaV * 100).toFixed(1)} cm/s</b> delta-V with <b>${leadTimeDays} days</b> warning lead time, 
