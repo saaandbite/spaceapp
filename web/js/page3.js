@@ -111,105 +111,18 @@
   /* -------------------------------------------------------------
      Map Initialization
      ------------------------------------------------------------- */
-  // MapLibre globe: a 3D Earth when zoomed out, flattening to a normal map near city level
-  // CARTO basemaps now watermark tiles without an API key, so the dark map stays on Esri (base + labels)
-  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
-  const raster = (path, maxzoom, attribution = '') => ({
-    type: 'raster', tiles: [ESRI + path + '/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom, attribution
-  });
-  const BASEMAPS = {
-    dark: ['dark-base', 'dark-ref'],
-    satellite: ['sat-img', 'sat-roads', 'sat-places']
-  };
-  // No GPU (hardware acceleration off / missing driver) means WebGL runs on the CPU: render lighter there
-  const SOFTWARE_GL = (() => {
-    try {
-      const gl = document.createElement('canvas').getContext('webgl');
-      const info = gl && gl.getExtension('WEBGL_debug_renderer_info');
-      return !gl || /swiftshader|basic render|llvmpipe|software/i.test(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '');
-    } catch (e) { return true; }
-  })();
-  const map = new maplibregl.Map({
-    container: 'sim-map',
-    pixelRatio: SOFTWARE_GL ? 1 : Math.min(devicePixelRatio, 2),
-    fadeDuration: SOFTWARE_GL ? 0 : 300,
-    center: [currentLng, currentLat],
-    zoom: 1.6,
-    maxZoom: 18,
-    attributionControl: { compact: true },
-    style: {
-      version: 8,
-      projection: { type: 'globe' },
-      sky: { 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] },
-      sources: {
-        'dark-base': raster('Canvas/World_Dark_Gray_Base', 16, '© Esri, HERE, Garmin'),
-        'dark-ref': raster('Canvas/World_Dark_Gray_Reference', 16),
-        'sat-img': raster('World_Imagery', 18, '© Esri, Maxar, Earthstar Geographics'),
-        'sat-roads': raster('Reference/World_Transportation', 18),
-        'sat-places': raster('Reference/World_Boundaries_and_Places', 18)
-      },
-      layers: [
-        { id: 'space', type: 'background', paint: { 'background-color': '#05050f' } },
-        ...Object.entries(BASEMAPS).flatMap(([name, ids]) => ids.map(id => ({
-          id, type: 'raster', source: id, layout: { visibility: name === 'dark' ? 'visible' : 'none' }
-        })))
-      ]
-    }
-  });
-  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-left');
-
-  /* Basemap switcher (replaces Leaflet's layers control) */
-  map.addControl({
-    onAdd() {
-      const el = document.createElement('div');
-      el.className = 'maplibregl-ctrl maplibregl-ctrl-group basemap-switch';
-      el.innerHTML = '<button type="button" data-map="dark" class="active">Dark Map</button><button type="button" data-map="satellite">Satellite + Labels</button>';
-      el.addEventListener('click', e => {
-        const pick = e.target.dataset.map;
-        if (!pick) return;
-        el.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === e.target));
-        Object.entries(BASEMAPS).forEach(([name, ids]) =>
-          ids.forEach(id => map.setLayoutProperty(id, 'visibility', name === pick ? 'visible' : 'none')));
-      });
-      return el;
-    },
-    onRemove() {}
-  }, 'top-right');
-
-  /* Slow spin until the user touches the globe (skipped for reduced motion) */
-  let spinning = !SOFTWARE_GL && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const stopSpin = () => { spinning = false; };
-  ['mousedown', 'touchstart', 'wheel'].forEach(ev => map.on(ev, stopSpin));
-  (function spin() {
-    if (!spinning) return;
-    if (map.getZoom() < 3) { const c = map.getCenter(); map.setCenter([c.lng + 0.08, c.lat]); }
-    requestAnimationFrame(spin);
-  })();
-
-  /* GeoJSON helpers for hazard rings and the DART line */
+  const map = Globe.create('sim-map', { center: [currentLng, currentLat], zoom: 1.6, basemaps: ['dark', 'satellite'] });
+  const { circlePolygon } = Globe;
+  const stopSpin = map.stopSpin;
   const EMPTY = { type: 'FeatureCollection', features: [] };
-  function circlePolygon(lat, lng, radiusM, props, steps = 96) {
-    const R = 6371008.8, d = radiusM / R;
-    const φ1 = lat * Math.PI / 180, λ1 = lng * Math.PI / 180;
-    const ring = [];
-    for (let i = 0; i <= steps; i++) {
-      const θ = (i / steps) * 2 * Math.PI;
-      const φ2 = Math.asin(Math.sin(φ1) * Math.cos(d) + Math.cos(φ1) * Math.sin(d) * Math.cos(θ));
-      const λ2 = λ1 + Math.atan2(Math.sin(θ) * Math.sin(d) * Math.cos(φ1), Math.cos(d) - Math.sin(φ1) * Math.sin(φ2));
-      ring.push([λ2 * 180 / Math.PI, φ2 * 180 / Math.PI]);
-    }
-    return { type: 'Feature', properties: props, geometry: { type: 'Polygon', coordinates: [ring] } };
-  }
-  console.assert(Math.abs(circlePolygon(0, 0, 111195, {}).geometry.coordinates[0][0][1] - 1) < 0.001, 'circlePolygon: 111.2 km north of the equator should be ~1° lat');
 
-  const mapReady = new Promise(resolve => map.on('load', () => {
+  const mapReady = map.ready.then(() => {
     map.addSource('hazard', { type: 'geojson', data: EMPTY });
     map.addLayer({ id: 'hazard-fill', type: 'fill', source: 'hazard', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': ['get', 'opacity'] } });
     map.addLayer({ id: 'hazard-line', type: 'line', source: 'hazard', paint: { 'line-color': ['get', 'color'], 'line-width': 2 } });
     map.addSource('dart', { type: 'geojson', data: EMPTY });
     map.addLayer({ id: 'dart-line', type: 'line', source: 'dart', paint: { 'line-color': '#81b29a', 'line-width': 3, 'line-dasharray': [2, 2] } });
-    resolve();
-  }));
+  });
 
   /* Hover tooltip for rings (Leaflet's sticky tooltip) */
   const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
@@ -263,8 +176,7 @@
   function flyToRadius(lat, lng, radiusM, opts = {}) {
     const bounds = new maplibregl.LngLatBounds();
     circlePolygon(lat, lng, radiusM, {}, 32).geometry.coordinates[0].forEach(c => bounds.extend(c));
-    // a long flight re-renders every frame; without a GPU jump almost straight there
-    map.fitBounds(bounds, { padding: 60, duration: SOFTWARE_GL ? 600 : 2500, essential: true, ...opts });
+        map.fitBounds(bounds, { padding: 60, duration: Globe.flight(2500), essential: true, ...opts });
   }
 
   /* -------------------------------------------------------------
@@ -287,7 +199,7 @@
       if (city) {
         setCoordinates(city.latitude, city.longitude);
         stopSpin();
-        map.flyTo({ center: [city.longitude, city.latitude], zoom: 11, duration: SOFTWARE_GL ? 600 : 2500, essential: true });
+        map.flyTo({ center: [city.longitude, city.latitude], zoom: 11, duration: Globe.flight(2500), essential: true });
       }
     });
   }
@@ -679,7 +591,7 @@
     // Fit bounds to show both ground zero and deflected marker
     stopSpin();
     map.fitBounds([[Math.min(currentLng, deflectedLng), currentLat], [Math.max(currentLng, deflectedLng), currentLat]],
-      { padding: 80, maxZoom: 14, duration: 2000, essential: true });
+      { padding: 80, maxZoom: 14, duration: Globe.flight(2000), essential: true });
   });
 
   // Run initial simulation on load for default Jumapalo without shake

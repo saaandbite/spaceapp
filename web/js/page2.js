@@ -1,6 +1,6 @@
 /**
  * page2.js — Treasure Map: Global & Indonesia Spatial Explorer
- * Uses Leaflet.js for interactive mapping
+ * MapLibre GL globe (shared setup in globe.js)
  */
 (async function () {
   'use strict';
@@ -23,6 +23,13 @@
     return (kg * 1000).toFixed(1) + ' g';
   }
 
+  const pinPopup = p => `
+      <b>${p.name}</b><br>
+      Year: ${p.year || '—'} · ${p.fall_type || ''}<br>
+      Class: ${p.recclass || ''}<br>
+      Mass: <b>${fmtMass(p.mass_kg)}</b><br>
+      Material: ${p.material_class}`;
+
   /* ---------- load data ---------- */
   let pinsData, indoData, fireballsData, clustersData;
   try {
@@ -39,38 +46,13 @@
 
   /* Handle both array and {pins:[]} shapes */
   const pins = Array.isArray(pinsData) ? pinsData : (pinsData.pins || pinsData);
+  const fireballs = Array.isArray(fireballsData) ? fireballsData : (fireballsData.fireballs || []);
 
   /* ---------- map init ---------- */
-  // centre at -20° so zoom 2 shows ~70°N down to Antarctica (where 71% of clean records are)
-  const WORLD_VIEW = [[-20, 20], 2];
-  const map = L.map('map', { zoomControl: true }).setView(...WORLD_VIEW);
-
-  // CARTO basemaps now watermark tiles without an API key, so the dark map stays on Esri (base + labels)
-  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
-  const darkTile = L.layerGroup([
-    L.tileLayer(ESRI + 'World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, HERE, Garmin', maxNativeZoom: 16, maxZoom: 18 }),
-    L.tileLayer(ESRI + 'World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 16, maxZoom: 18 })
-  ]);
-  // NASA GIBS layers only go to native zoom 8; Leaflet upscales beyond that
-  const GIBS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/';
-  const blackMarble = L.tileLayer(GIBS + 'VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png', {
-    attribution: 'NASA Earth Observatory / GIBS (VIIRS Black Marble 2016)', maxNativeZoom: 8, maxZoom: 12
-  });
-  const blueMarble = L.tileLayer(GIBS + 'BlueMarble_ShadedRelief_Bathymetry/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg', {
-    attribution: 'NASA Blue Marble / GIBS', maxNativeZoom: 8, maxZoom: 12
-  });
-  darkTile.addTo(map);
-  L.control.layers({
-    'Dark Map': darkTile,
-    'NASA Black Marble (city lights)': blackMarble,
-    'NASA Blue Marble': blueMarble
-  }).addTo(map);
-
-  /* ---------- layers ---------- */
-  const globalLayer  = L.layerGroup().addTo(map);
-  const indoLayer    = L.layerGroup();
-  const fireballLayer = L.layerGroup();
-  const clusterLayer = L.layerGroup();
+  // centre at -20° so the globe shows the southern hemisphere too (71% of clean records are Antarctic)
+  const WORLD_VIEW = { center: [20, -20], zoom: 1.6 };
+  const map = Globe.create('map', { ...WORLD_VIEW, basemaps: ['dark', 'blackMarble', 'blueMarble'] });
+  const fly = (opts) => { map.stopSpin(); map.flyTo({ duration: Globe.flight(1500), essential: true, ...opts }); };
 
   /* ---------- DOM refs ---------- */
   const btnGlobal    = document.getElementById('btn-global');
@@ -80,83 +62,89 @@
   const chkFireballs = document.getElementById('chk-fireballs');
   const chkClusters  = document.getElementById('chk-clusters');
 
-  /* ---------- populate global markers ---------- */
-  pins.forEach(p => {
-    const r = Math.max(3, Math.min(15, Math.log10(Math.max(p.mass_kg, 1)) * 3));
-    const color = MATERIAL_COLORS[p.material_class] || '#9aa5b8';
-    const marker = L.circleMarker([p.latitude, p.longitude], {
-      radius: r, fillColor: color, fillOpacity: 0.7,
-      color: color, weight: 1, opacity: 0.9
+  const popup = new maplibregl.Popup({ offset: 8, maxWidth: '260px' });
+  const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+  const setVisible = (id, on) => map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
+
+  /* ---------- GeoJSON layers: clusters (bottom), fireballs, global pins (top) ---------- */
+  const CLUSTER_COLORS = ['#9aa5b8', '#9aa5b8', '#e9c46a', '#81b29a', '#e07a5f'];
+  map.ready.then(() => {
+    map.addSource('clusters', { type: 'geojson', data: { type: 'FeatureCollection', features: clustersData.clusters.map((c, i) =>
+      // area ~ record count; visible at world zoom
+      Globe.circlePolygon(c.centroid_lat, c.centroid_lon, Math.sqrt(c.count) * 10000, {
+        color: CLUSTER_COLORS[i],
+        label: `<b>Cluster ${c.cluster}: ${(EN.cluster[c.cluster] || [c.name])[0]}</b><br>${c.count.toLocaleString()} records (${c.pct}%)<br>${(EN.cluster[c.cluster] || [, c.interpretation])[1]}`
+      })) } });
+    map.addLayer({ id: 'clusters-fill', type: 'fill', source: 'clusters', layout: { visibility: 'none' }, paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.15 } });
+    map.addLayer({ id: 'clusters-line', type: 'line', source: 'clusters', layout: { visibility: 'none' }, paint: { 'line-color': ['get', 'color'], 'line-width': 2, 'line-dasharray': [3, 3] } });
+
+    map.addSource('fireballs', { type: 'geojson', data: { type: 'FeatureCollection', features: fireballs
+      .filter(f => f.latitude != null && f.longitude != null)
+      .map(f => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [f.longitude, f.latitude] }, properties: {
+        html: `<b>Fireball</b><br>${f.datetime_utc || ''}<br>Altitude: ${f.altitude_km ? f.altitude_km.toFixed(1) + ' km' : '—'}<br>Energy: ${f.energy_kilotons_tnt ? f.energy_kilotons_tnt.toFixed(3) + ' kt' : '—'}`
+      } })) } });
+    map.addLayer({ id: 'fireballs', type: 'circle', source: 'fireballs', layout: { visibility: 'none' }, paint: {
+      'circle-radius': 2.5, 'circle-color': '#ff9e3d', 'circle-opacity': 0.35,
+      'circle-stroke-color': '#ff9e3d', 'circle-stroke-width': 0.5, 'circle-stroke-opacity': 0.5
+    } });
+
+    map.addSource('pins', { type: 'geojson', data: { type: 'FeatureCollection', features: pins.map((p, i) => ({
+      type: 'Feature', geometry: { type: 'Point', coordinates: [p.longitude, p.latitude] },
+      properties: { i, r: Math.max(3, Math.min(15, Math.log10(Math.max(p.mass_kg, 1)) * 3)), color: MATERIAL_COLORS[p.material_class] || '#9aa5b8' }
+    })) } });
+    map.addLayer({ id: 'pins', type: 'circle', source: 'pins', paint: {
+      'circle-radius': ['get', 'r'], 'circle-color': ['get', 'color'], 'circle-opacity': 0.7,
+      'circle-stroke-color': ['get', 'color'], 'circle-stroke-width': 1, 'circle-stroke-opacity': 0.9
+    } });
+
+    map.on('click', 'pins', e => {
+      const p = pins[e.features[0].properties.i];
+      popup.setLngLat([p.longitude, p.latitude]).setHTML(pinPopup(p)).addTo(map);
+      showDetail(p);
     });
-    marker.bindPopup(`
-      <b>${p.name}</b><br>
-      Year: ${p.year || '—'} · ${p.fall_type || ''}<br>
-      Class: ${p.recclass || ''}<br>
-      Mass: <b>${fmtMass(p.mass_kg)}</b><br>
-      Material: ${p.material_class}
-    `);
-    marker.on('click', () => showDetail(p));
-    globalLayer.addLayer(marker);
+    map.on('click', 'fireballs', e => {
+      if (map.getLayoutProperty('pins', 'visibility') !== 'none' && map.queryRenderedFeatures(e.point, { layers: ['pins'] }).length) return; // a pin on top wins
+      popup.setLngLat(e.lngLat).setHTML(e.features[0].properties.html).addTo(map);
+    });
+    map.on('mousemove', 'clusters-fill', e => hoverPopup.setLngLat(e.lngLat).setHTML(e.features[0].properties.label).addTo(map));
+    map.on('mouseleave', 'clusters-fill', () => hoverPopup.remove());
+    ['pins', 'fireballs'].forEach(id => {
+      map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', id, () => { map.getCanvas().style.cursor = ''; });
+    });
   });
 
-  /* ---------- populate Indonesia markers ---------- */
-  indoData.meteorites.forEach(m => {
-    const icon = L.divIcon({ className: '', html: '<div class="indo-pin"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
-    const marker = L.marker([m.latitude, m.longitude], { icon });
-    marker.bindPopup(`
-      <b>${m.name}</b> (${m.year})<br>
-      Class: ${m.recclass}<br>
-      Mass: <b>${fmtMass(m.mass_kg)}</b><br>
-      Energy: ${m.energy_tons_tnt} tons of TNT<br>
-      Regime: ${m.impact_regime}
-    `);
-    marker.on('click', () => showDetail(m));
+  /* ---------- Indonesia markers (DOM markers, shown in Indonesia mode) ---------- */
+  const indoMarkers = indoData.meteorites.map(m => {
+    const el = document.createElement('div');
+    el.className = 'indo-pin';
+    const marker = new maplibregl.Marker({ element: el })
+      .setLngLat([m.longitude, m.latitude])
+      .setPopup(new maplibregl.Popup({ offset: 12, maxWidth: '260px' }).setHTML(`
+        <b>${m.name}</b> (${m.year})<br>
+        Class: ${m.recclass}<br>
+        Mass: <b>${fmtMass(m.mass_kg)}</b><br>
+        Energy: ${m.energy_tons_tnt} tons of TNT<br>
+        Regime: ${m.impact_regime}`));
+    el.addEventListener('click', () => showDetail(m));
     marker._metData = m;
-    indoLayer.addLayer(marker);
-  });
-
-  /* ---------- fireballs ---------- */
-  (Array.isArray(fireballsData) ? fireballsData : (fireballsData.fireballs || [])).forEach(f => {
-    if (f.latitude == null || f.longitude == null) return;
-    L.circleMarker([f.latitude, f.longitude], {
-      radius: 2.5, fillColor: '#ff9e3d', fillOpacity: 0.35,
-      color: '#ff9e3d', weight: 0.5, opacity: 0.5
-    }).bindPopup(`
-      <b>Fireball</b><br>
-      ${f.datetime_utc || ''}<br>
-      Altitude: ${f.altitude_km ? f.altitude_km.toFixed(1) + ' km' : '—'}<br>
-      Energy: ${f.energy_kilotons_tnt ? f.energy_kilotons_tnt.toFixed(3) + ' kt' : '—'}
-    `).addTo(fireballLayer);
+    return marker;
   });
 
   /* ---------- historic airbursts (Chelyabinsk, Bone): always visible ---------- */
   (fireballsData.special_cases || []).forEach(s => {
-    L.marker([s.latitude, s.longitude], {
-      icon: L.divIcon({
-        className: '',
-        html: '<div class="airburst-pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M18.2 5.8l-2.5 2.5M8.3 15.7l-2.5 2.5"/></svg></div>',
-        iconSize: [28, 28], iconAnchor: [14, 14]
-      }),
-      title: s.name,
-      zIndexOffset: 1000
-    }).bindPopup(`
-      <b>${s.name}</b><br>
-      Satellite-detected airburst · ${s.datetime_utc.slice(0, 10)}<br>
-      Energy: <b>${s.energy_kilotons_tnt} kt TNT</b><br>
-      Burst altitude: ${s.altitude_km} km
-    `).addTo(map);
-  });
-
-  /* ---------- cluster overlays ---------- */
-  const CLUSTER_COLORS = ['#9aa5b8', '#9aa5b8', '#e9c46a', '#81b29a', '#e07a5f'];
-  map.createPane('clusters').style.zIndex = 350; // below the pins (overlayPane = 400) so pins stay visible and clickable
-  clustersData.clusters.forEach((c, i) => {
-    const radiusM = Math.sqrt(c.count) * 10000; // area ~ record count; visible at world zoom
-    L.circle([c.centroid_lat, c.centroid_lon], {
-      pane: 'clusters', radius: radiusM, fillColor: CLUSTER_COLORS[i], fillOpacity: 0.15,
-      color: CLUSTER_COLORS[i], opacity: 0.8, weight: 2, dashArray: '6,6'
-    }).bindTooltip(`<b>Cluster ${c.cluster}: ${(EN.cluster[c.cluster] || [c.name])[0]}</b><br>${c.count.toLocaleString()} records (${c.pct}%)<br>${(EN.cluster[c.cluster] || [, c.interpretation])[1]}`, { sticky: true })
-      .addTo(clusterLayer);
+    const el = document.createElement('div');
+    el.className = 'airburst-pin';
+    el.title = s.name;
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M18.2 5.8l-2.5 2.5M8.3 15.7l-2.5 2.5"/></svg>';
+    new maplibregl.Marker({ element: el })
+      .setLngLat([s.longitude, s.latitude])
+      .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML(`
+        <b>${s.name}</b><br>
+        Satellite-detected airburst · ${s.datetime_utc.slice(0, 10)}<br>
+        Energy: <b>${s.energy_kilotons_tnt} kt TNT</b><br>
+        Burst altitude: ${s.altitude_km} km`))
+      .addTo(map);
   });
 
   /* ---------- sidebar logic ---------- */
@@ -173,8 +161,9 @@
           <div class="pin-meta">${p.year || '—'} · ${fmtMass(p.mass_kg)}</div>
         </div>`;
       el.addEventListener('click', () => {
-        map.flyTo([p.latitude, p.longitude], isIndo ? 9 : 6, { duration: 1 });
+        fly({ center: [p.longitude, p.latitude], zoom: isIndo ? 9 : 6 });
         showDetail(p);
+        if (!isIndo) popup.setLngLat([p.longitude, p.latitude]).setHTML(pinPopup(p)).addTo(map);
         document.querySelectorAll('.pin-item').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
       });
@@ -198,18 +187,18 @@
   function setMode(mode) {
     btnGlobal.classList.toggle('active', mode === 'global');
     btnIndo.classList.toggle('active', mode === 'indonesia');
+    popup.remove();
+    map.ready.then(() => setVisible('pins', mode === 'global'));
 
     if (mode === 'global') {
-      map.removeLayer(indoLayer);
-      globalLayer.addTo(map);
-      map.flyTo(...WORLD_VIEW, { duration: 1 });
+      indoMarkers.forEach(mk => mk.remove());
+      fly(WORLD_VIEW);
       const sorted = [...pins].sort((a, b) => b.mass_kg - a.mass_kg).slice(0, 80);
       renderPinList(sorted, false);
       detailCard.classList.add('hidden');
     } else {
-      map.removeLayer(globalLayer);
-      indoLayer.addTo(map);
-      map.flyTo([-2, 118], 5, { duration: 1 });
+      indoMarkers.forEach(mk => mk.addTo(map));
+      fly({ center: [118, -2], zoom: 4 });
       renderPinList(indoData.meteorites, true);
       /* Auto-select Prambanan */
       const prambanan = indoData.meteorites.find(m => m.name === indoData.default_pin);
@@ -217,11 +206,9 @@
         showDetail(prambanan);
         const firstItem = pinList.querySelector('.pin-item');
         if (firstItem) firstItem.classList.add('active');
-        setTimeout(() => {
-          indoLayer.eachLayer(l => {
-            if (l._metData && l._metData.name === prambanan.name) l.openPopup();
-          });
-        }, 1200);
+        const mk = indoMarkers.find(mk => mk._metData.name === prambanan.name);
+        // open once the camera has landed (a moveend listener can fire early from the previous flight)
+        setTimeout(() => { if (mk && !mk.getPopup().isOpen()) mk.togglePopup(); }, Globe.flight(1500) + 100);
       }
     }
   }
@@ -229,21 +216,20 @@
   document.getElementById('btn-antarctica').addEventListener('click', () => {
     setMode('global');
     chkClusters.checked = true;
-    clusterLayer.addTo(map);
+    map.ready.then(() => { setVisible('clusters-fill', true); setVisible('clusters-line', true); });
     // most Antarctic finds sit in two groups (~75°E Yamato, ~160°E Transantarctic); centre between them
-    setTimeout(() => map.flyTo([-72, 117], 3, { duration: 1.2 }), 50);
+    fly({ center: [117, -75], zoom: 1.9 });
   });
 
   btnGlobal.addEventListener('click', () => setMode('global'));
   btnIndo.addEventListener('click', () => setMode('indonesia'));
 
   /* ---------- toggle layers ---------- */
-  chkFireballs.addEventListener('change', () => {
-    chkFireballs.checked ? fireballLayer.addTo(map) : map.removeLayer(fireballLayer);
-  });
-  chkClusters.addEventListener('change', () => {
-    chkClusters.checked ? clusterLayer.addTo(map) : map.removeLayer(clusterLayer);
-  });
+  chkFireballs.addEventListener('change', () => map.ready.then(() => setVisible('fireballs', chkFireballs.checked)));
+  chkClusters.addEventListener('change', () => map.ready.then(() => {
+    setVisible('clusters-fill', chkClusters.checked);
+    setVisible('clusters-line', chkClusters.checked);
+  }));
 
   /* ---------- init ---------- */
   const sorted = [...pins].sort((a, b) => b.mass_kg - a.mass_kg).slice(0, 80);
