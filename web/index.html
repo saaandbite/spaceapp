@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NASA data shows meteorite finds jumped 66x after the 1970s. Is Earth being hit more often? A data-driven documentary.">
+  <meta name="theme-color" content="#0a0a1a">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg>">
   <title>Is It a Meteor Shower? — The Documentary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -12,9 +15,8 @@
 
   <!-- ===== BACKGROUND VIDEO (NASA & Eyewitness Assets) ===== -->
   <div class="video-background-wrap">
-    <video id="bg-video" class="video-background" autoplay muted loop playsinline poster="../assets/images/chelyabinsk_meteor_panorama_02.webp">
-      <source src="../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4" type="video/mp4">
-    </video>
+    <!-- src is set by page1.js, so phones and reduced-motion users don't download or autoplay it -->
+    <video id="bg-video" class="video-background" muted loop playsinline preload="none" poster="../assets/images/chelyabinsk_meteor_panorama_02.webp"></video>
     <div class="video-background-overlay"></div>
   </div>
 
@@ -40,7 +42,98 @@
       <button class="btn btn-sm btn-secondary" id="btn-vid-orbit">🛰️ Meteor Orbit Trajectory</button>
     </div>
 
-    <a href="#clue1" class="scroll-hint" aria-label="Scroll down">↓</a>
+    <a href="#history" class="scroll-hint" aria-label="Scroll down">↓</a>
+  </section>
+
+  <!-- ===== HISTORY: parallax documentary chapters ===== -->
+  <section class="history" id="history">
+    <article class="chapter">
+      <div class="chapter-year" data-speed="0.35" aria-hidden="true">1908</div>
+      <div class="chapter-card reveal">
+        <span class="section-label">Chapter 1 · Tunguska, Siberia</span>
+        <h2>The sky split open</h2>
+        <p>On 30 June 1908 a space rock 50–80 m wide exploded above the Siberian taiga. It flattened about 80 million trees across 2,150 km² of forest.</p>
+        <p class="chapter-punch">It left no crater. The rock never reached the ground.</p>
+      </div>
+    </article>
+
+    <article class="chapter">
+      <div class="chapter-year" data-speed="0.35" aria-hidden="true">1970s</div>
+      <div class="chapter-card reveal">
+        <span class="section-label">Chapter 2 · Antarctica</span>
+        <h2>Scientists start looking on the ice</h2>
+        <p>Dark rocks are easy to spot on Antarctic blue ice, so expeditions began collecting meteorites there by the thousands. Antarctic finds in NASA's dataset jumped from <strong id="h-ant-1960">12</strong> in the 1960s to <strong id="h-ant-1970">4,396</strong> in the 1970s.</p>
+        <p class="chapter-punch">Over the same decades, falls that people actually saw stayed at about <strong id="h-fell-range">54–58</strong> per decade.</p>
+      </div>
+    </article>
+
+    <article class="chapter">
+      <div class="chapter-year" data-speed="0.35" aria-hidden="true">1988</div>
+      <div class="chapter-card reveal">
+        <span class="section-label">Chapter 3 · Eyes in orbit</span>
+        <h2>Satellites start counting fireballs</h2>
+        <p>US government sensors record bright fireballs as they explode in the atmosphere. NASA's CNEOS database holds <strong id="h-fb-count">888</strong> located events from <strong id="h-fb-first">1988</strong> to <strong id="h-fb-last">2026</strong>, over oceans, deserts and cities.</p>
+        <p class="chapter-punch">Most incoming rocks burn up or burst in the air. Nobody collects those pieces from the sea floor.</p>
+      </div>
+    </article>
+
+    <article class="chapter">
+      <div class="chapter-year" data-speed="0.35" aria-hidden="true">2009</div>
+      <div class="chapter-card reveal">
+        <span class="section-label">Chapter 4 · Bone, South Sulawesi</span>
+        <h2>An airburst over Indonesia</h2>
+        <p>On <span id="h-bone-date">8 October 2009</span> a fireball released about <strong id="h-bone-kt">33</strong> kilotons of energy at <strong id="h-bone-alt">19.1</strong> km above Bone, South Sulawesi. People heard the blast, and nothing hit the ground.</p>
+      </div>
+    </article>
+
+    <article class="chapter">
+      <div class="chapter-img" data-speed="-0.15" style="background-image:url('../assets/images/chelyabinsk_meteor_trail_01.webp')" aria-hidden="true"></div>
+      <div class="chapter-year" data-speed="0.35" aria-hidden="true">2013</div>
+      <div class="chapter-card reveal">
+        <span class="section-label">Chapter 5 · Chelyabinsk, Russia</span>
+        <h2>The flash that shook a city</h2>
+        <p>An undetected asteroid about 20 m wide exploded <strong id="h-chel-alt">23.3</strong> km above Chelyabinsk with about <strong id="h-chel-kt">441</strong> kilotons of energy. The shockwave damaged 7,200 buildings.</p>
+        <p class="chapter-punch">More than 1,500 people were hurt, almost all by flying window glass. Many had walked to a window to look at the flash.</p>
+      </div>
+    </article>
+
+    <article class="chapter">
+      <div class="chapter-card reveal" style="text-align:center">
+        <span class="section-label">The question</span>
+        <h2>So is Earth under a meteor shower?</h2>
+        <p>The raw NASA data seems to say yes. Let's look at the clues.</p>
+        <a href="#difference" class="scroll-hint" aria-label="Next section">↓</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== FIRST: shower vs meteorite ===== -->
+  <section class="section-parallax" id="difference">
+    <div class="reveal">
+      <span class="section-label">Before the clues</span>
+      <h2>A meteor shower is not a meteorite</h2>
+      <p class="subtitle">The title asks about meteor showers, but NASA's dataset counts something else. These are three different things.</p>
+    </div>
+    <div class="card-grid reveal">
+      <div class="card" style="border-top:3px solid var(--accent)">
+        <div style="font-size:2rem">🌠</div>
+        <h3 style="color:var(--accent)">Meteor shower</h3>
+        <p class="text-muted" style="font-size:.88rem; margin-top:.4rem">Dust left behind by a comet, mostly grains smaller than sand. They burn up about 80–120 km above us and come back on the same dates every year, like the Perseids in August.</p>
+        <p class="badge mt-1">Nothing reaches the ground</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--warning)">
+        <div style="font-size:2rem">🔥</div>
+        <h3 style="color:var(--warning)">Fireball / bolide</h3>
+        <p class="text-muted" style="font-size:.88rem; margin-top:.4rem">A bigger rock that glows brighter than Venus and often explodes in the air, like Chelyabinsk. Satellites log these in NASA's CNEOS database.</p>
+        <p class="badge mt-1" style="color:var(--warning); border-color:rgba(255,171,64,.3); background:rgba(255,171,64,.1)">Shockwave, a few fragments</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--danger)">
+        <div style="font-size:2rem">🪨</div>
+        <h3 style="color:var(--danger)">Meteorite</h3>
+        <p class="text-muted" style="font-size:.88rem; margin-top:.4rem">A piece of rock or metal that survives the trip and is picked up on the ground. NASA's Meteorite Landings dataset is a list of these finds.</p>
+        <p class="badge mt-1" style="color:var(--danger); border-color:rgba(255,82,82,.3); background:rgba(255,82,82,.1)">This is what the dataset counts</p>
+      </div>
+    </div>
   </section>
 
   <!-- ===== CLUE 1: The 1970s Mystery Surge ===== -->
@@ -50,6 +143,15 @@
       <h2>The 1970s Mystery Surge</h2>
       <p class="subtitle">From 136 finds in the 1900s to 9,061 in the 1990s — a <strong style="color:var(--danger)">66.6×</strong> explosion. Is Earth under attack?</p>
     </div>
+    <!-- Cleaning funnel: numbers from notebook/pipeline_transformation.ipynb output -->
+    <div class="funnel reveal" aria-label="Data cleaning steps">
+      <p class="funnel-title">First, clean the raw data. Not every record is real.</p>
+      <div class="funnel-row"><span class="funnel-bar" style="--w:100%"></span><span class="funnel-num">45,716</span><span class="funnel-label">raw records from NASA</span></div>
+      <div class="funnel-row"><span class="funnel-bar" style="--w:83.7%"></span><span class="funnel-num">38,282</span><span class="funnel-label">−7,434 with missing mass, year or location</span></div>
+      <div class="funnel-row"><span class="funnel-bar warn" style="--w:70.1%"></span><span class="funnel-num">32,068</span><span class="funnel-label">−6,214 placed at 0°, 0° ("Null Island", in the Gulf of Guinea)</span></div>
+      <div class="funnel-row"><span class="funnel-bar ok" style="--w:69.8%"></span><span class="funnel-num">31,911</span><span class="funnel-label">−157 impossible years (e.g. 2101) or zero mass → <strong>clean data</strong></span></div>
+    </div>
+
     <div class="chart-wrap reveal" id="chart-decades">
       <canvas id="canvas-decades"></canvas>
     </div>
@@ -64,7 +166,7 @@
       <p class="subtitle">Not all space rocks are created equal. What are they made of — and does composition determine destruction?</p>
     </div>
     <div class="card-grid reveal" id="material-cards"></div>
-    <div class="chart-wrap reveal mt-2" id="chart-materials">
+    <div class="chart-wrap reveal mt-2" id="chart-materials" style="height:200px">
       <canvas id="canvas-materials"></canvas>
     </div>
     <div class="verdict reveal" id="verdict2"></div>
@@ -81,7 +183,7 @@
       <canvas id="canvas-features"></canvas>
     </div>
     <div class="reveal mt-2" id="ml-stats"></div>
-    <div class="card-grid reveal mt-2" id="cluster-cards"></div>
+    <div class="card-grid reveal mt-2" id="cluster-cards" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))"></div>
   </section>
 
   <!-- ===== CONCLUSION ===== -->
@@ -96,7 +198,34 @@
     </div>
   </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <!-- ===== SOURCES & CREDITS ===== -->
+  <footer class="credits" id="credits">
+    <h3>Sources &amp; credits</h3>
+    <div class="credits-grid">
+      <div>
+        <h4>NASA data</h4>
+        <ul>
+          <li><a href="https://data.nasa.gov/dataset/meteorite-landings" target="_blank" rel="noopener">Meteorite Landings</a> (The Meteoritical Society, via data.nasa.gov)</li>
+          <li><a href="https://cneos.jpl.nasa.gov/fireballs/" target="_blank" rel="noopener">CNEOS Fireball &amp; Bolide Reports</a> (NASA JPL)</li>
+          <li><a href="https://ssd-api.jpl.nasa.gov/doc/sentry.html" target="_blank" rel="noopener">Sentry</a> and <a href="https://ssd-api.jpl.nasa.gov/doc/cad.html" target="_blank" rel="noopener">SBDB Close-Approach</a> APIs (NASA JPL)</li>
+          <li><a href="https://api.nasa.gov/" target="_blank" rel="noopener">NeoWs</a> (NASA Open APIs)</li>
+          <li><a href="https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-r10-4.10" target="_blank" rel="noopener">Gridded Population of the World v4</a> (NASA SEDAC / Earthdata)</li>
+          <li>Map layers: NASA GIBS (Black Marble, Blue Marble), Esri</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stories &amp; footage</h4>
+        <ul>
+          <li><a href="https://www.planetary.org/articles/what-was-the-chelyabinsk-meteor-event" target="_blank" rel="noopener">The Planetary Society</a>, <a href="https://www.space.com/33623-chelyabinsk-meteor-wake-up-call-for-earth.html" target="_blank" rel="noopener">Space.com</a>, <a href="https://bigthink.com/the-past/tunguska-event-cosmic-air-burst/" target="_blank" rel="noopener">Big Think</a>, <a href="https://earthsky.org/?p=279324" target="_blank" rel="noopener">EarthSky</a>, <a href="https://www.rocketstem.org/?p=13566" target="_blank" rel="noopener">RocketSTEM</a></li>
+          <li>Video: <a href="https://www.youtube.com/watch?v=K01woThoJrM" target="_blank" rel="noopener">"Chelyabinsk Meteor: The Flash That Shook a City"</a> and <a href="https://www.youtube.com/watch?v=3Dx3f7NGm18" target="_blank" rel="noopener">"Orbit of the Chelyabinsk meteor"</a> (YouTube; rights belong to their creators)</li>
+          <!-- TODO(team): add the original source of assets/images/chelyabinsk_*.webp here -->
+        </ul>
+      </div>
+    </div>
+    <p class="text-muted" style="font-size:.78rem; margin-top:1rem">Built for the NASA Space Apps Challenge 2026 · Be An Earth System Trend Detective! · NASA does not endorse this project.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/page1.js"></script>
 </body>

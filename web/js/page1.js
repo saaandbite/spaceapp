@@ -5,10 +5,8 @@
 (async function () {
   'use strict';
 
-  const DATA = '../datasets/exports/';
-
   /* ---------- helpers ---------- */
-  const fetchJSON = url => fetch(DATA + url).then(r => r.json());
+  const fetchJSON = window.fetchData;
   const fmt = n => Number(n).toLocaleString();
   const MATERIAL_COLORS = {
     'Iron / Stony-Iron': '#ff5252',
@@ -23,13 +21,88 @@
     'Ordinary Chondrite': '🪨'
   };
 
+  /* ---------- background video: autoplay only on larger screens without reduced motion ---------- */
+  const VIDEOS = {
+    flash: '../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4',
+    orbit: '../assets/videos/YTDown.com_YouTube_Media_3Dx3f7NGm18_Orbit-of-the-Chelyabinsk-meteor_001_1080p.mp4'
+  };
+  const bgVideo = document.getElementById('bg-video');
+  const playVideo = key => { bgVideo.src = VIDEOS[key]; bgVideo.play().catch(() => {}); };
+  const autoVideo = !matchMedia('(prefers-reduced-motion: reduce), (max-width: 768px)').matches;
+  if (bgVideo && autoVideo) playVideo('flash');
+
+  /* footage switcher: an explicit click plays the video even on phones */
+  const vidButtons = { flash: document.getElementById('btn-vid-flash'), orbit: document.getElementById('btn-vid-orbit') };
+  Object.entries(vidButtons).forEach(([key, btn]) => {
+    if (!btn) return;
+    btn.classList.toggle('active', autoVideo && key === 'flash');
+    btn.addEventListener('click', () => {
+      playVideo(key);
+      Object.values(vidButtons).forEach(b => b && b.classList.toggle('active', b === btn));
+    });
+  });
+
+  /* ---------- parallax: [data-speed] layers drift relative to their chapter ---------- */
+  const layers = [...document.querySelectorAll('[data-speed]')];
+  if (layers.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const update = () => {
+      const mid = innerHeight / 2;
+      layers.forEach(el => {
+        const r = el.parentElement.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > innerHeight + 200) return;
+        const off = (r.top + r.height / 2 - mid) * parseFloat(el.dataset.speed);
+        el.style.transform = `translate3d(0, ${off.toFixed(1)}px, 0)`;
+      });
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+
   /* ---------- load data ---------- */
-  const [trendData, matData, rfData, clusterData] = await Promise.all([
-    fetchJSON('trend_decades.json'),
-    fetchJSON('material_classes.json'),
-    fetchJSON('rf_model.json'),
-    fetchJSON('clusters.json')
-  ]);
+  let trendData, matData, rfData, clusterData, fireballData;
+  try {
+    [trendData, matData, rfData, clusterData, fireballData] = await Promise.all([
+      fetchJSON('trend_decades.json'),
+      fetchJSON('material_classes.json'),
+      fetchJSON('rf_model.json'),
+      fetchJSON('clusters.json'),
+      fetchJSON('fireballs.json')
+    ]);
+  } catch (err) {
+    showLoadError(err);
+    return;
+  }
+
+  /* ---------- history chapters: fill numbers from the exported data ---------- */
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const dec = y => trendData.decades.find(d => d.decade === y);
+  if (dec(1960) && dec(1970)) {
+    setText('h-ant-1960', fmt(dec(1960).antarctica));
+    setText('h-ant-1970', fmt(dec(1970).antarctica));
+  }
+  const fellFull = trendData.decades.filter(d => d.decade >= 1960 && !d.is_partial).map(d => d.fell);
+  if (fellFull.length) setText('h-fell-range', `${Math.min(...fellFull)}–${Math.max(...fellFull)}`);
+
+  const fbDates = fireballData.fireballs.map(f => f.datetime_utc).filter(Boolean).sort();
+  setText('h-fb-count', fmt(fireballData.fireballs.length));
+  setText('h-fb-first', fbDates[0].slice(0, 4));
+  setText('h-fb-last', fbDates[fbDates.length - 1].slice(0, 4));
+
+  const special = name => (fireballData.special_cases || []).find(s => s.name.startsWith(name));
+  const bone = special('Bolide Bone');
+  if (bone) {
+    setText('h-bone-kt', bone.energy_kilotons_tnt);
+    setText('h-bone-alt', bone.altitude_km);
+    setText('h-bone-date', new Date(bone.datetime_utc.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }));
+  }
+  const chel = special('Chelyabinsk');
+  if (chel) {
+    setText('h-chel-kt', fmt(chel.energy_kilotons_tnt));
+    setText('h-chel-alt', chel.altitude_km);
+  }
 
   /* ==========================================================
      CLUE 1 — Decade Chart (Stacked Bar + Line)
@@ -89,7 +162,7 @@
   document.getElementById('verdict1').innerHTML =
     '<strong>The answer is NO.</strong> Earth is not being bombarded more frequently. ' +
     'The red line proves that human-witnessed meteorite falls stayed remarkably stable at ' +
-    '<strong style="color:var(--danger)">~55–88 per decade</strong> for over a century. ' +
+    '<strong style="color:var(--danger)">54–88 per decade</strong> for over a century. ' +
     'The dramatic surge after 1970 is entirely caused by systematic Antarctic blue-ice expeditions — ' +
     'scientists actively searching for meteorites on a white backdrop, not rocks falling more often.';
 
@@ -106,7 +179,7 @@
         <h3 style="color:${color}">${m.material_class}</h3>
         <p class="text-muted" style="font-size:.8rem; margin:.4rem 0">${m.pct}% of data · ${fmt(m.count)} records</p>
         <p style="font-size:.95rem"><strong>${m.mean_mass_kg < 10 ? m.mean_mass_kg.toFixed(2) + ' kg' : fmt(Math.round(m.mean_mass_kg)) + ' kg'}</strong> avg</p>
-        <p class="text-muted" style="font-size:.82rem">${m.analogy}</p>
+        <p class="text-muted" style="font-size:.82rem">${EN.analogy[m.material_class] || m.analogy}</p>
         <p class="badge mt-1" style="font-size:.7rem">${m.impact_regime}</p>
       </div>`;
   });
@@ -138,7 +211,7 @@
     'common space rocks (tensile strength 35 MPa) that shatter in the atmosphere as <em>airbursts</em>. ' +
     'Only <strong style="color:var(--danger)">3.49%</strong> are dense <strong style="color:var(--danger)">Iron meteorites</strong> ' +
     '(350 MPa) massive enough to survive atmospheric entry and crater the ground. ' +
-    'This is why the Chelyabinsk meteor <strong>exploded 30 km in the air</strong> rather than hitting the surface — ' +
+    'This is why the Chelyabinsk meteor <strong>exploded about 23 km up in the air</strong> rather than hitting the surface — ' +
     'and why 1,500 people were injured by <em>glass from shattered windows</em>, not by a crater impact.';
 
   /* ==========================================================
@@ -148,7 +221,7 @@
   new Chart(document.getElementById('canvas-features'), {
     type: 'bar',
     data: {
-      labels: fi.map(f => f.label),
+      labels: fi.map(f => EN.feature[f.feature] || f.label),
       datasets: [{
         label: 'Importance %',
         data: fi.map(f => f.importance_pct),
@@ -190,32 +263,15 @@
   const clusterEl = document.getElementById('cluster-cards');
   clusterData.clusters.forEach((c, i) => {
     const color = CLUSTER_COLORS[i];
+    const [name, interp] = EN.cluster[c.cluster] || [c.name, c.interpretation];
     clusterEl.innerHTML += `
       <div class="card" style="border-top:3px solid ${color}">
-        <h3 style="color:${color}; font-size:1rem">Cluster ${c.cluster}: ${c.name}</h3>
+        <h3 style="color:${color}; font-size:1rem">Cluster ${c.cluster}: ${name}</h3>
         <p class="text-muted" style="font-size:.8rem">${fmt(c.count)} records (${c.pct}%)</p>
         <p style="font-size:.85rem; margin:.4rem 0">Median mass: ${c.median_mass_g < 1000 ? c.median_mass_g + ' g' : (c.median_mass_g / 1000).toFixed(1) + ' kg'}</p>
         <p style="font-size:.82rem">Fell ratio: ${c.fell_pct}%</p>
-        <p class="text-muted" style="font-size:.78rem; margin-top:.4rem">${c.interpretation}</p>
+        <p class="text-muted" style="font-size:.78rem; margin-top:.4rem">${interp}</p>
       </div>`;
   });
 
-  /* Background Video Switcher */
-  const bgVideo = document.getElementById('bg-video');
-  const btnFlash = document.getElementById('btn-vid-flash');
-  const btnOrbit = document.getElementById('btn-vid-orbit');
-  if (bgVideo && btnFlash && btnOrbit) {
-    btnFlash.addEventListener('click', () => {
-      bgVideo.src = '../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4';
-      bgVideo.play().catch(() => {});
-      btnFlash.classList.add('active');
-      btnOrbit.classList.remove('active');
-    });
-    btnOrbit.addEventListener('click', () => {
-      bgVideo.src = '../assets/videos/YTDown.com_YouTube_Media_3Dx3f7NGm18_Orbit-of-the-Chelyabinsk-meteor_001_1080p.mp4';
-      bgVideo.play().catch(() => {});
-      btnOrbit.classList.add('active');
-      btnFlash.classList.remove('active');
-    });
-  }
 })();

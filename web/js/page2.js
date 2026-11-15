@@ -5,8 +5,7 @@
 (async function () {
   'use strict';
 
-  const DATA = '../datasets/exports/';
-  const fetchJSON = url => fetch(DATA + url).then(r => r.json());
+  const fetchJSON = window.fetchData;
 
   /* ---------- helpers ---------- */
   const MATERIAL_COLORS = {
@@ -24,27 +23,47 @@
   }
 
   /* ---------- load data ---------- */
-  const [pinsData, indoData, fireballsData, clustersData] = await Promise.all([
-    fetchJSON('map_pins.json'),
-    fetchJSON('indonesia.json'),
-    fetchJSON('fireballs.json'),
-    fetchJSON('clusters.json')
-  ]);
+  let pinsData, indoData, fireballsData, clustersData;
+  try {
+    [pinsData, indoData, fireballsData, clustersData] = await Promise.all([
+      fetchJSON('map_pins.json'),
+      fetchJSON('indonesia.json'),
+      fetchJSON('fireballs.json'),
+      fetchJSON('clusters.json')
+    ]);
+  } catch (err) {
+    showLoadError(err);
+    return;
+  }
 
   /* Handle both array and {pins:[]} shapes */
   const pins = Array.isArray(pinsData) ? pinsData : (pinsData.pins || pinsData);
 
   /* ---------- map init ---------- */
-  const map = L.map('map', { zoomControl: true }).setView([20, 0], 2);
+  // centre at -20° so zoom 2 shows ~70°N down to Antarctica (where 71% of clean records are)
+  const WORLD_VIEW = [[-20, 20], 2];
+  const map = L.map('map', { zoomControl: true }).setView(...WORLD_VIEW);
 
-  const darkTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '© Esri, HERE, Garmin', maxZoom: 16
+  // CARTO basemaps now watermark tiles without an API key, so the dark map stays on Esri (base + labels)
+  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
+  const darkTile = L.layerGroup([
+    L.tileLayer(ESRI + 'World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, HERE, Garmin', maxNativeZoom: 16, maxZoom: 18 }),
+    L.tileLayer(ESRI + 'World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 16, maxZoom: 18 })
+  ]);
+  // NASA GIBS layers only go to native zoom 8; Leaflet upscales beyond that
+  const GIBS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/';
+  const blackMarble = L.tileLayer(GIBS + 'VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png', {
+    attribution: 'NASA Earth Observatory / GIBS (VIIRS Black Marble 2016)', maxNativeZoom: 8, maxZoom: 12
   });
-  const satTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '© Esri, Earthstar Geographics', maxZoom: 18
+  const blueMarble = L.tileLayer(GIBS + 'BlueMarble_ShadedRelief_Bathymetry/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg', {
+    attribution: 'NASA Blue Marble / GIBS', maxNativeZoom: 8, maxZoom: 12
   });
   darkTile.addTo(map);
-  L.control.layers({ 'Dark Space': darkTile, 'Satellite': satTile }).addTo(map);
+  L.control.layers({
+    'Dark Map': darkTile,
+    'NASA Black Marble (city lights)': blackMarble,
+    'NASA Blue Marble': blueMarble
+  }).addTo(map);
 
   /* ---------- layers ---------- */
   const globalLayer  = L.layerGroup().addTo(map);
@@ -81,17 +100,13 @@
 
   /* ---------- populate Indonesia markers ---------- */
   indoData.meteorites.forEach(m => {
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="font-size:1.5rem; text-shadow:0 2px 6px rgba(0,0,0,.6); cursor:pointer">🇮🇩</div>`,
-      iconSize: [28, 28], iconAnchor: [14, 14]
-    });
+    const icon = L.divIcon({ className: '', html: '<div class="indo-pin"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
     const marker = L.marker([m.latitude, m.longitude], { icon });
     marker.bindPopup(`
       <b>${m.name}</b> (${m.year})<br>
       Class: ${m.recclass}<br>
       Mass: <b>${fmtMass(m.mass_kg)}</b><br>
-      Energy: ${m.energy_tons_tnt} Ton TNT<br>
+      Energy: ${m.energy_tons_tnt} tons of TNT<br>
       Regime: ${m.impact_regime}
     `);
     marker.on('click', () => showDetail(m));
@@ -113,15 +128,33 @@
     `).addTo(fireballLayer);
   });
 
+  /* ---------- historic airbursts (Chelyabinsk, Bone): always visible ---------- */
+  (fireballsData.special_cases || []).forEach(s => {
+    L.marker([s.latitude, s.longitude], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="font-size:1.6rem; text-shadow:0 0 10px rgba(255,171,64,.9); cursor:pointer">💥</div>',
+        iconSize: [28, 28], iconAnchor: [14, 14]
+      }),
+      title: s.name,
+      zIndexOffset: 1000
+    }).bindPopup(`
+      <b>${s.name}</b><br>
+      Satellite-detected airburst · ${s.datetime_utc.slice(0, 10)}<br>
+      Energy: <b>${s.energy_kilotons_tnt} kt TNT</b><br>
+      Burst altitude: ${s.altitude_km} km
+    `).addTo(map);
+  });
+
   /* ---------- cluster overlays ---------- */
-  const CLUSTER_COLORS = ['rgba(79,195,247,0.15)', 'rgba(79,195,247,0.15)', 'rgba(255,171,64,0.12)', 'rgba(105,240,174,0.12)', 'rgba(255,138,101,0.12)'];
+  const CLUSTER_COLORS = ['#4fc3f7', '#4fc3f7', '#ffab40', '#69f0ae', '#ff8a65']; // same as page 1 cards
+  map.createPane('clusters').style.zIndex = 350; // below the pins (overlayPane = 400) so pins stay visible and clickable
   clustersData.clusters.forEach((c, i) => {
-    const radiusM = Math.sqrt(c.count) * 3000;
+    const radiusM = Math.sqrt(c.count) * 10000; // area ~ record count; visible at world zoom
     L.circle([c.centroid_lat, c.centroid_lon], {
-      radius: radiusM, fillColor: CLUSTER_COLORS[i],
-      fillOpacity: 0.4, color: CLUSTER_COLORS[i].replace(/[\d.]+\)$/, '0.6)'),
-      weight: 1, dashArray: '5,5'
-    }).bindTooltip(`<b>Cluster ${c.cluster}: ${c.name}</b><br>${c.count.toLocaleString()} records (${c.pct}%)<br>${c.interpretation}`, { sticky: true })
+      pane: 'clusters', radius: radiusM, fillColor: CLUSTER_COLORS[i], fillOpacity: 0.15,
+      color: CLUSTER_COLORS[i], opacity: 0.8, weight: 2, dashArray: '6,6'
+    }).bindTooltip(`<b>Cluster ${c.cluster}: ${(EN.cluster[c.cluster] || [c.name])[0]}</b><br>${c.count.toLocaleString()} records (${c.pct}%)<br>${(EN.cluster[c.cluster] || [, c.interpretation])[1]}`, { sticky: true })
       .addTo(clusterLayer);
   });
 
@@ -157,7 +190,7 @@
     document.getElementById('detail-type').textContent = p.fall_type || '—';
     document.getElementById('detail-material').textContent = p.material_class || '—';
     document.getElementById('detail-regime').textContent = p.impact_regime || '—';
-    document.getElementById('detail-energy').textContent = p.energy_tons_tnt ? p.energy_tons_tnt + ' Ton TNT' : '—';
+    document.getElementById('detail-energy').textContent = p.energy_tons_tnt ? p.energy_tons_tnt + ' tons of TNT' : '—';
   }
 
   /* ---------- mode toggle ---------- */
@@ -168,7 +201,7 @@
     if (mode === 'global') {
       map.removeLayer(indoLayer);
       globalLayer.addTo(map);
-      map.flyTo([20, 0], 2, { duration: 1 });
+      map.flyTo(...WORLD_VIEW, { duration: 1 });
       const sorted = [...pins].sort((a, b) => b.mass_kg - a.mass_kg).slice(0, 80);
       renderPinList(sorted, false);
       detailCard.classList.add('hidden');
@@ -191,6 +224,14 @@
       }
     }
   }
+
+  document.getElementById('btn-antarctica').addEventListener('click', () => {
+    setMode('global');
+    chkClusters.checked = true;
+    clusterLayer.addTo(map);
+    // most Antarctic finds sit in two groups (~75°E Yamato, ~160°E Transantarctic); centre between them
+    setTimeout(() => map.flyTo([-72, 117], 3, { duration: 1.2 }), 50);
+  });
 
   btnGlobal.addEventListener('click', () => setMode('global'));
   btnIndo.addEventListener('click', () => setMode('indonesia'));
