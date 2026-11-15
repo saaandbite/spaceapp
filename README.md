@@ -28,6 +28,10 @@ Everything is static, so no build step is needed.
 1. Repo **Settings → Pages → Build and deployment**: Source *Deploy from a branch*, branch `main`, folder `/ (root)`.
 2. The site appears at `https://<owner>.github.io/<repo>/`. The root `index.html` redirects to `web/index.html`.
 
+## Deploy (Vercel)
+
+The live site is https://is-it-a-meteor-shower.vercel.app (also https://spaceapp-page1.vercel.app). The Vercel project `spaceapp-page1` is connected to this repo: every push to `main` deploys automatically, no manual redeploy needed. `/map.html` and `/simulator.html` redirect to the pages under `/web/` (see `vercel.json`).
+
 ## Data pipeline
 
 The notebooks in `notebook/` turn the raw NASA files in `datasets/` into the small JSON files in `datasets/exports/` that the web pages read:
