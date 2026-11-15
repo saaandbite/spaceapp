@@ -8,8 +8,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☄️</text></svg>">
   <title>Drop a Meteor! — Is It a Meteor Shower?</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
   <link rel="stylesheet" href="css/global.css">
 </head>
 <body>
@@ -30,11 +30,15 @@
 
     <!-- Control Panel -->
     <aside class="control-panel">
-      <h3>💥 Drop a Meteor!</h3>
+      <header class="panel-head">
+        <p class="kicker">Impact sandbox · real physics</p>
+        <h1>Drop a meteor</h1>
+        <p class="standfirst">Pick a city, size a rock, and see how far the blast reaches.</p>
+      </header>
 
       <!-- Target -->
       <div class="control-section">
-        <h4>📍 Target</h4>
+        <h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>Target</h4>
         <label class="field-label">City Preset</label>
         <select id="city-select"><option value="">— or click the map —</option></select>
         <p class="text-muted mt-1" style="font-size:.75rem">Lat: <span id="lbl-lat">-6.20</span> · Lng: <span id="lbl-lng">106.85</span></p>
@@ -42,7 +46,7 @@
 
       <!-- Meteoroid -->
       <div class="control-section">
-        <h4>☄️ Meteoroid</h4>
+        <h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16.5" cy="7.5" r="3.4" fill="currentColor" stroke="none"/><path d="M13.5 10.5 5 19"/><path d="M15.8 12.8 10 18.5"/></svg>Meteoroid</h4>
 
         <label class="field-label">Mass</label>
         <input type="range" id="mass-slider" min="0" max="100" value="30" step="0.1">
@@ -63,13 +67,13 @@
 
       <!-- Asteroid Presets -->
       <div class="control-section">
-        <h4>🛰️ Real Asteroid Preset</h4>
+        <h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-30 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>Real Asteroid Preset</h4>
         <select id="asteroid-select"><option value="">— select an asteroid —</option></select>
       </div>
 
       <!-- Drop Button -->
       <button class="btn btn-primary w-full" id="btn-drop" style="font-size:1.1rem; padding:.8rem">
-        💥 Drop It!
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M18.2 5.8l-2.5 2.5M8.3 15.7l-2.5 2.5"/></svg>Drop It!
       </button>
 
       <!-- Results -->
@@ -81,7 +85,7 @@
       <!-- DART Deflection -->
       <div class="control-section">
         <div class="collapsible-header open">
-          <h4 style="margin:0">🚀 DART Deflection</h4>
+          <h4 style="margin:0"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 19 5M11 5h8v8"/></svg>DART Deflection</h4>
         </div>
         <div class="collapsible-body open">
           <label class="field-label mt-1">Delta-V (m/s)</label>
@@ -96,7 +100,7 @@
       <!-- Real Atmospheric Breakup Video -->
       <div class="control-section">
         <div class="collapsible-header">
-          <h4 style="margin:0">📹 Real Airburst Footage</h4>
+          <h4 style="margin:0"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M3.5 8 6 4h12.5L21 8"/><path d="M8 12.5l2.5 2L13 12.5"/></svg>Real Airburst Footage</h4>
         </div>
         <div class="collapsible-body">
           <video controls muted playsinline preload="none" style="width:100%; border-radius:8px; margin-top:.5rem" poster="../assets/images/chelyabinsk_meteor_trail_01.webp">
@@ -111,7 +115,7 @@
     <div class="sim-map-container" id="sim-map"></div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/page3.js"></script>
 </body>
