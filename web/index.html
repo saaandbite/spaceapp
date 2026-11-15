@@ -5,22 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Is It a Meteor Shower? — The Documentary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/global.css">
 </head>
-<body>
+<body class="doc">
 
-  <!-- ===== BACKGROUND VIDEO (NASA & Eyewitness Assets) ===== -->
-  <div class="video-background-wrap">
-    <video id="bg-video" class="video-background" autoplay muted loop playsinline poster="../assets/images/chelyabinsk_meteor_panorama_02.webp">
-      <source src="../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4" type="video/mp4">
-    </video>
-    <div class="video-background-overlay"></div>
-  </div>
+  <!-- ===== SCROLL PROGRESS ===== -->
+  <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
 
   <!-- ===== NAV ===== -->
   <nav class="nav-bar">
-    <span class="nav-logo">☄️ Is It a Meteor Shower?</span>
+    <span class="nav-logo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="16.5" cy="7.5" r="3.4" fill="currentColor" stroke="none"/><path d="M13.5 10.5 5 19"/><path d="M15.8 12.8 10 18.5"/></svg> Is It a Meteor Shower?</span>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <div class="nav-links">
       <a class="nav-link" href="index.html">The Documentary</a>
       <a class="nav-link" href="map.html">Treasure Map</a>
@@ -28,74 +25,265 @@
     </div>
   </nav>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero" id="hero">
-    <h1>Is It a Meteor Shower?</h1>
-    <p class="subtitle">Uncovering NASA's Meteorite Trends &amp; Impact Risks — A Data-Driven Documentary</p>
-    <p class="text-muted mt-1" style="font-size:.85rem">NASA Space Apps Challenge 2026 · Be An Earth System Trend Detective!</p>
-    
-    <!-- Video Footage Switcher -->
-    <div class="btn-group mt-2" style="z-index:10">
-      <button class="btn btn-sm btn-secondary active" id="btn-vid-flash">⚡ Eyewitness Flash Footage</button>
-      <button class="btn btn-sm btn-secondary" id="btn-vid-orbit">🛰️ Meteor Orbit Trajectory</button>
+  <!-- ===== HERO — CHELYABINSK, 15 FEB 2013 (layered parallax) ===== -->
+  <header class="hero" id="hero">
+    <div class="hero-media" aria-hidden="true">
+      <video id="bg-video" class="hero-video" autoplay muted loop playsinline poster="../assets/images/chelyabinsk_meteor_panorama_02.webp">
+        <source src="../assets/videos/YTDown.com_YouTube_Media_K01woThoJrM_Chelyabinsk-Meteor-The-Flash-That-Shook-a-City_001_1080p.mp4" type="video/mp4">
+      </video>
+      <img class="hero-trail" src="../assets/images/chelyabinsk_meteor_trail_01.webp" alt="">
+      <div class="hero-shade"></div>
     </div>
+    <div class="hero-content" id="hero-content">
+      <p class="kicker">15 February 2013 · 09:20 · Chelyabinsk, Russia</p>
+      <h1>The sky didn&rsquo;t change.<br><em>The way we count it did.</em></h1>
+      <p class="standfirst">A fireball brighter than the Sun crossed the morning sky and exploded in the air. No crater — but its shockwave shattered windows across a city, and more than 1,500 people were injured, most of them by flying glass.</p>
+      <p class="standfirst">That morning raised a simple question with a not-so-simple answer: is Earth being hit by meteors more often than before? This is the story of 31,911 stones that answered it.</p>
+      <p class="byline">By Team TDR-3000 · Yogyakarta — NASA Space Apps Challenge 2026, Challenge 1: Be An Earth System Trend Detective!</p>
 
-    <a href="#clue1" class="scroll-hint" aria-label="Scroll down">↓</a>
-  </section>
-
-  <!-- ===== CLUE 1: The 1970s Mystery Surge ===== -->
-  <section class="section-parallax" id="clue1">
-    <div class="reveal">
-      <span class="section-label">Clue #1</span>
-      <h2>The 1970s Mystery Surge</h2>
-      <p class="subtitle">From 136 finds in the 1900s to 9,061 in the 1990s — a <strong style="color:var(--danger)">66.6×</strong> explosion. Is Earth under attack?</p>
-    </div>
-    <div class="chart-wrap reveal" id="chart-decades">
-      <canvas id="canvas-decades"></canvas>
-    </div>
-    <div class="verdict reveal" id="verdict1"></div>
-  </section>
-
-  <!-- ===== CLUE 2: Heavy Metal vs Space Pebbles ===== -->
-  <section class="section-parallax" id="clue2">
-    <div class="reveal">
-      <span class="section-label">Clue #2</span>
-      <h2>Heavy Metal vs. Space Pebbles</h2>
-      <p class="subtitle">Not all space rocks are created equal. What are they made of — and does composition determine destruction?</p>
-    </div>
-    <div class="card-grid reveal" id="material-cards"></div>
-    <div class="chart-wrap reveal mt-2" id="chart-materials">
-      <canvas id="canvas-materials"></canvas>
-    </div>
-    <div class="verdict reveal" id="verdict2"></div>
-  </section>
-
-  <!-- ===== CLUE 3: AI Detective ===== -->
-  <section class="section-parallax" id="clue3">
-    <div class="reveal">
-      <span class="section-label">Clue #3</span>
-      <h2>The AI Detective</h2>
-      <p class="subtitle">A Random Forest classifier with <strong class="text-accent">98.61% accuracy</strong> reveals WHERE determines WHEN a meteorite is found.</p>
-    </div>
-    <div class="chart-wrap reveal" id="chart-features">
-      <canvas id="canvas-features"></canvas>
-    </div>
-    <div class="reveal mt-2" id="ml-stats"></div>
-    <div class="card-grid reveal mt-2" id="cluster-cards"></div>
-  </section>
-
-  <!-- ===== CONCLUSION ===== -->
-  <section class="section-parallax" id="conclusion" style="text-align:center">
-    <div class="reveal">
-      <h2>The Verdict Is In</h2>
-      <p class="subtitle" style="margin:1rem auto">Earth is <em>not</em> being bombarded more frequently. The surge is a human search bias — not a cosmic threat increase. But the real danger is still out there.</p>
-      <div class="btn-group" style="justify-content:center; margin-top:2rem">
-        <a class="btn btn-secondary" href="map.html">🗺️ Explore the Treasure Map</a>
-        <a class="btn btn-primary" href="simulator.html">💥 Drop a Meteor!</a>
+      <!-- Video Footage Switcher -->
+      <div class="btn-group mt-2" style="z-index:10">
+        <button class="btn btn-sm btn-secondary active" id="btn-vid-flash"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg> Eyewitness Flash Footage</button>
+        <button class="btn btn-sm btn-secondary" id="btn-vid-orbit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-30 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg> Meteor Orbit Trajectory</button>
+        <button class="btn btn-sm btn-secondary" id="btn-vid-clips"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M3.5 8 6 4h12.5L21 8"/><path d="M8 12.5l2.5 2L13 12.5"/></svg> 4-Clip Compilation (2160p)</button>
       </div>
+
+      <!-- Chapter index -->
+      <nav class="chapter-index" aria-label="Chapters">
+        <a href="#ch1">01 · The Quiet Sky</a>
+        <a href="#ch2">02 · The Surge</a>
+        <a href="#ch3">03 · The White Desert</a>
+        <a href="#ch4">04 · What Falls, What Burns</a>
+        <a href="#ch5">05 · The Machine Confirms</a>
+        <a href="#ch6">06 · Home</a>
+      </nav>
+    </div>
+
+    <a href="#ch1" class="scroll-hint" aria-label="Scroll down to begin the story">Scroll to begin ↓</a>
+  </header>
+
+  <main>
+  <!-- ===== CHAPTER 1 — THE QUIET SKY (1900s–1960s) ===== -->
+  <section class="scrolly" id="ch1">
+    <div class="scrolly-head reveal">
+      <span class="chapter-label">Chapter 01 · 1900 – 1969</span>
+      <h2>The Quiet Sky</h2>
+    </div>
+    <div class="scrolly-body">
+      <figure class="scrolly-graphic">
+        <div class="graphic-glow" aria-hidden="true"></div>
+        <div class="big-figure">
+          <span class="big-num" id="ch1-num">136</span>
+          <span class="big-cap" id="ch1-cap">meteorites found in the 1900s</span>
+        </div>
+      </figure>
+      <article class="scrolly-steps">
+        <div class="step" data-step="0" data-num="136" data-cap="meteorites found in the 1900s">
+          <p>For most of the twentieth century, the sky behaved. People who watched it saw a meteor fall every now and then — a bright streak, a stone in a field, a story in the newspaper. The official record agreed: in the 1900s, only <strong>136 meteorites</strong> were found in the entire decade.</p>
+        </div>
+        <div class="step" data-step="1" data-num="54–88" data-cap="human-witnessed falls per full decade">
+          <p>And it stayed that way. Falls that people actually saw happen — <em>Fell</em>, in the catalog's language — held steady at <strong>54 to 88 per full decade</strong>, from the 1900s through the 2000s. The numbers were small, and nobody thought the sky was changing.</p>
+        </div>
+        <div class="step" data-step="2" data-num="31,911" data-cap="clean records in NASA's catalog">
+          <p>That calm is our baseline. Every claim in this documentary is measured against it — because a mystery only exists if something actually changed. The catalog behind it: NASA Meteorite Landings, <strong>45,716 records cleaned to 31,911</strong>.</p>
+        </div>
+      </article>
     </div>
   </section>
 
+  <!-- ===== PHOTO BAND — METEOR TRAIL ===== -->
+  <figure class="photo-band band-trail">
+    <figcaption>The Chelyabinsk meteor's trail over the city, 15 February 2013. <span class="credit">Eyewitness photo</span></figcaption>
+  </figure>
+
+  <!-- ===== CHAPTER 2 — THE SURGE (1970s–1990s) ===== -->
+  <section class="scrolly" id="ch2">
+    <div class="scrolly-head reveal">
+      <span class="chapter-label">Chapter 02 · 1970 – 1999</span>
+      <h2>The Surge</h2>
+      <p class="scrolly-intro">Then the record exploded. Read raw, the data screams that Earth is being bombarded 66 times more often. That is the mystery this documentary investigates.</p>
+    </div>
+    <div class="scrolly-body">
+      <figure class="scrolly-graphic">
+        <div class="graphic-glow" aria-hidden="true"></div>
+        <div class="chart-wrap"><canvas id="canvas-decades"></canvas></div>
+        <figcaption>Grey bars: finds — the lighter top half is Antarctica, the darker base the rest of the world. Amber line: falls people actually saw happen.</figcaption>
+      </figure>
+      <article class="scrolly-steps">
+        <div class="step" data-step="0">
+          <p>From <strong>136 finds in the 1900s</strong> to <strong>9,061 in the 1990s</strong> — a <strong class="num">66.6×</strong> jump. Scroll on, and watch the bars grow.</p>
+        </div>
+        <div class="step" data-step="1">
+          <p>But the same data was hiding a lie. <strong>6,214 records</strong> all pointed at one spot in the ocean — coordinates 0, 0, in the Gulf of Guinea. No meteorites fell there. That is Null Island: the empty coordinate a catalog writes when the real location was never recorded.</p>
+        </div>
+        <div class="step" data-step="2">
+          <p><strong>The answer is no.</strong> Earth is not being bombarded more frequently. The amber line proves it: human-witnessed falls stayed at <strong class="num">54–88 per full decade</strong> the whole century. The surge after 1970 is entirely caused by systematic Antarctic blue-ice expeditions — scientists actively searching for meteorites on a white backdrop, not rocks falling more often.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== PHOTO BAND — PANORAMA ===== -->
+  <figure class="photo-band band-panorama">
+    <figcaption>Panorama of the Chelyabinsk fireball over the city. <span class="credit">Eyewitness photo</span></figcaption>
+  </figure>
+
+  <!-- ===== CHAPTER 3 — THE WHITE DESERT (ANTARCTICA, overlay scene) ===== -->
+  <section class="scene" id="ch3">
+    <div class="scene-head reveal">
+      <span class="chapter-label">Chapter 03 · Antarctica</span>
+      <h2>The White Desert</h2>
+    </div>
+    <div class="scene-visual" aria-hidden="true">
+      <span class="scene-big" id="cluster-lat">−60°</span>
+      <span class="scene-sub" id="cluster-sub">of all clean records come from below this line</span>
+    </div>
+    <article class="scene-steps">
+      <div class="step" data-step="0" data-lat="−60°" data-sub="of all clean records come from below this line">
+        <p>The answer was not in the sky. It was on the ice. Since the 1970s, scientific expeditions have swept Antarctica's blue ice, where dark stones stand out on a white surface and stay frozen for thousands of years. <strong>69.25% of all clean records</strong> come from below −60° latitude.</p>
+      </div>
+      <div class="step" data-step="1" data-lat="−76°" data-sub="two clusters on the ice hold 22,760 records — 71.32% of the data">
+        <p>Our K-Means analysis split the Earth into five zones. The two biggest sit on that ice — together holding <strong>22,760 records, 71.32% of the data</strong>. One centers on −76.28°S, the other on −75.32°S.</p>
+      </div>
+      <div class="step" data-step="2" data-lat="19.9°" data-sub="the Sahara &amp; Arab cluster — 3,769 records, median 249 g">
+        <p>The other clusters tell the same story from the opposite climate: the Sahara and the Arabian desert, <strong>3,769 records</strong> — bare, dry ground where a dark stone is easy to spot.</p>
+      </div>
+      <div class="step" data-step="3" data-lat="29.2°" data-sub="populated continents and North America — where people look">
+        <p>And the rest: populated continents (<strong>3,025</strong>) and North America (<strong>2,357</strong>). This map of clusters is not a map of where meteors fall. It is a map of where humans go looking for them.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== CHAPTER 4 — WHAT FALLS, WHAT BURNS (MATERIAL) ===== -->
+  <section class="scrolly" id="ch4">
+    <div class="scrolly-head reveal">
+      <span class="chapter-label">Chapter 04 · The Physics</span>
+      <h2>What Falls, What Burns</h2>
+      <p class="scrolly-intro">Not every space rock reaches the ground. What a meteorite is made of decides whether it burns up as a fireball or survives to carve a crater — and that decides what kind of danger it is.</p>
+    </div>
+    <div class="scrolly-body">
+      <figure class="scrolly-graphic">
+        <div class="graphic-glow" aria-hidden="true"></div>
+        <div class="chart-wrap"><canvas id="canvas-materials"></canvas></div>
+        <div class="big-figure">
+          <span class="big-num" id="mat-count">28,988</span>
+          <span class="big-cap" id="mat-name">Ordinary Chondrite · 90.84% of all records</span>
+          <span class="big-note" id="mat-note">Average 1.77 kg — about a laptop. Shatters in the air, 15–30 km up.</span>
+        </div>
+      </figure>
+      <article class="scrolly-steps">
+        <div class="step" data-step="0" data-mat="Ordinary Chondrite" data-count="28,988" data-name="Ordinary Chondrite · 90.84% of all records" data-note="Average 1.77 kg — about a laptop. Shatters in the air, 15–30 km up.">
+          <p><strong>Ordinary Chondrite — 90.84%.</strong> Common silicate rock, 35 MPa of tensile strength. It does not reach the ground. It breaks apart high in the atmosphere as an airburst, and the shockwave does the damage.</p>
+        </div>
+        <div class="step" data-step="1" data-mat="Iron / Stony-Iron" data-count="1,113" data-name="Iron · 3.49% of all records" data-note="Average 478 kg — about a grand piano. Strong enough to crater the ground.">
+          <p><strong>Iron — 3.49%.</strong> Dense metal, 350 MPa. This is the one that survives entry and hits the ground whole. Rare — and the reason craters exist at all.</p>
+        </div>
+        <div class="step" data-step="2" data-mat="Achondrite" data-count="985" data-name="Achondrite · 3.09% of all records" data-note="Average 5.62 kg. Breaks apart in the mid-to-lower atmosphere, 15–25 km.">
+          <p><strong>Achondrite — 3.09%.</strong> Crustal rock from other worlds, 65 MPa. It breaks in the mid-to-lower atmosphere — a smaller, lower airburst.</p>
+        </div>
+        <div class="step" data-step="3" data-mat="Carbonaceous Chondrite" data-count="825" data-name="Carbonaceous Chondrite · 2.59% of all records" data-note="Average 3.90 kg. Fragile — crumbles above 35 km.">
+          <p><strong>Carbonaceous Chondrite — 2.59%.</strong> The most fragile, 5 MPa. It crumbles above 35 km and almost never reaches the ground — and it carries the chemistry of the early Solar System.</p>
+        </div>
+        <div class="step" data-step="4">
+          <p>Which is why Chelyabinsk — an ordinary chondrite — <strong>exploded in the air above the city</strong> instead of hitting it. NASA's CNEOS sensors recorded its flash 23 km up, releasing <strong class="num">441 kilotons</strong> of energy — and the shockwave shattered windows in more than <strong>7,200 buildings</strong>. And why 1,500 people were injured by <em>glass from shattered windows</em>, not by a crater impact.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== INTERLUDE — TUNGUSKA, 30 JUNE 1908 (from the team's research archive) ===== -->
+  <section class="scene scene-tunguska" id="tunguska">
+    <div class="scene-head reveal">
+      <span class="chapter-label">Interlude · 30 June 1908 · Tunguska, Siberia</span>
+      <h2>The Forest That Fell Without a Crater</h2>
+      <p class="source-note">Accounts from the team's research archive: Space.com &amp; Big Think (assets/articles/).</p>
+    </div>
+    <div class="scene-visual" aria-hidden="true">
+      <span class="scene-big" id="tunguska-big">2,150 km²</span>
+      <span class="scene-sub" id="tunguska-sub">of Siberian forest flattened on 30 June 1908</span>
+    </div>
+    <article class="scene-steps">
+      <div class="step" data-step="0" data-big="2,150 km²" data-sub="of Siberian forest flattened on 30 June 1908">
+        <p>Thirty years before the catalog even begins, the sky gave its loudest warning. On 30 June 1908, a fireball split the sky over the Siberian taiga — and <strong>80 million trees</strong> fell across <strong>2,150 km²</strong> of forest. An eyewitness 65 km away, S. Semenov, felt his shirt catch fire from the heat, then was hurled off his porch by the blast.</p>
+      </div>
+      <div class="step" data-step="1" data-big="5–10 km" data-sub="the altitude where it exploded — without ever touching the ground">
+        <p>A stony body 50–80 metres across, travelling at 15–30 km per second, never reached the earth. It burst in the air at <strong>5–10 km</strong> altitude, releasing <strong>10–15 megatons</strong> of energy — 25 to 30 times Chelyabinsk, 600 to 1,000 times Hiroshima.</p>
+      </div>
+      <div class="step" data-step="2" data-big="0" data-sub="craters found — the crater paradox">
+        <p>And then the mystery: when Leonid Kulik's expeditions finally reached the site in 1927, they found <strong>no crater at all</strong>. At the epicentre, trees stood stripped bare like telegraph poles — proof the blast came straight down from the sky. The most destructive meteor event in recorded history left no hole in the ground. The danger was never the impact. It was the airburst.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== CHAPTER 5 — THE MACHINE CONFIRMS (AI) ===== -->
+  <section class="scrolly" id="ch5">
+    <div class="scrolly-head reveal">
+      <span class="chapter-label">Chapter 05 · The Proof</span>
+      <h2>The Machine Confirms</h2>
+      <p class="scrolly-intro">We handed the question to a machine. A Random Forest learned to guess whether a meteorite was <em>seen falling</em> or <em>found later</em> — and it was right 98.61% of the time. But the important discovery was not the accuracy. It was what the model looked at to decide.</p>
+    </div>
+    <div class="scrolly-body">
+      <figure class="scrolly-graphic">
+        <div class="graphic-glow" aria-hidden="true"></div>
+        <div class="chart-wrap"><canvas id="canvas-features"></canvas></div>
+        <p class="ml-line">Accuracy <strong class="num">98.61%</strong> · ROC-AUC <strong class="num">0.9946</strong> · Balanced accuracy <strong class="num">0.9112</strong> · PR-AUC <strong class="num">0.8541</strong></p>
+      </figure>
+      <article class="scrolly-steps">
+        <div class="step" data-step="0">
+          <p>Every bar here is one thing the model was allowed to look at: latitude, longitude, mass, and what the rock is made of. Watch which one it leans on.</p>
+        </div>
+        <div class="step" data-step="1">
+          <p>Latitude alone carries <strong class="num">59.95% of the signal</strong> — absolute latitude 30.06% and latitude itself 29.88%. Where a rock fell matters far more than anything else.</p>
+        </div>
+        <div class="step" data-step="2">
+          <p>And what the rock is made of? Almost nothing. The strongest composition signal, Iron, is <strong class="num">0.59%</strong>. Whether a meteorite is recorded at all is decided by where it landed and who was searching — not by a changing sky.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== PHOTO BAND — DASHCAM FIREBALL (still from the 2160p compilation) ===== -->
+  <figure class="photo-band band-dashcam short">
+    <figcaption>Dashcam frame, 09:20:35 — the fireball's trail over Chelyabinsk. <span class="credit">Still from the four-clip compilation in this repo's assets</span></figcaption>
+  </figure>
+
+  <!-- ===== PHOTO BAND — TRAIL 03 ===== -->
+  <figure class="photo-band band-trail3">
+    <figcaption>A meteor trail burning across the sky. <span class="credit">Eyewitness photo</span></figcaption>
+  </figure>
+
+  <!-- ===== CHAPTER 6 — HOME (INDONESIA) ===== -->
+  <section class="scrolly" id="ch6">
+    <div class="scrolly-head reveal">
+      <span class="chapter-label">Chapter 06 · Indonesia</span>
+      <h2>Home</h2>
+      <p class="scrolly-intro">This is not a story about faraway continents. Indonesia has <strong>19 recorded meteorites</strong> in NASA's catalog — and its sky has its own fireballs, recorded by satellites over the sea where no one walks to pick up the stones.</p>
+    </div>
+    <div class="card-grid reveal" id="indo-highlights"></div>
+    <div class="reveal mt-2" style="text-align:center">
+      <a class="btn btn-secondary" href="map.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/></svg> See all 19 on the Treasure Map</a>
+    </div>
+  </section>
+
+  <!-- ===== FINALE — THE VERDICT ===== -->
+  <section class="finale" id="conclusion">
+    <div class="reveal">
+      <span class="chapter-label">Finale</span>
+      <h2>Not a meteor shower — a discovery bias.</h2>
+      <p class="standfirst" style="margin:1rem auto">Earth is not being bombarded more frequently. The surge is a human search bias, not a cosmic threat increase. The sky is steady. What changed is us: our expeditions, our sensors, our records.</p>
+      <p class="standfirst" style="margin:0 auto">But the real danger is still out there — and now you can see it for yourself.</p>
+      <div class="btn-group" style="justify-content:center; margin-top:2rem">
+        <a class="btn btn-secondary" href="map.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/></svg> Explore the Treasure Map</a>
+        <a class="btn btn-primary" href="simulator.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.8 5.8l2.5 2.5M15.7 15.7l2.5 2.5M18.2 5.8l-2.5 2.5M8.3 15.7l-2.5 2.5"/></svg> Drop a Meteor!</a>
+      </div>
+      <p class="method-note">Data: NASA Meteorite Landings (45,716 records, cleaned to 31,911) · CNEOS Fireballs · SEDAC GPWv4 · JPL NeoWs, Sentry &amp; Close-Approach Data. Analysis: Python notebooks in this repository; every number on this page was verified against them.</p>
+    </div>
+  </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <script src="js/nav.js"></script>
   <script src="js/page1.js"></script>
