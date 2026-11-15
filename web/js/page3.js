@@ -12,8 +12,7 @@
 (async function () {
   'use strict';
 
-  const DATA_PATH = '../datasets/exports/';
-  const fetchJSON = url => fetch(DATA_PATH + url).then(r => r.json());
+  const fetchJSON = window.fetchData;
 
   /* -------------------------------------------------------------
      DOM Elements
@@ -106,7 +105,7 @@
     asteroidPresetsData = asteroids;
     populationGridData = popGrid;
   } catch (err) {
-    console.error('Error loading simulator datasets:', err);
+    showLoadError(err); // the map and physics still work; presets and materials will be missing
   }
 
   /* -------------------------------------------------------------
@@ -118,18 +117,21 @@
     maxZoom: 18
   }).setView([currentLat, currentLng], 11);
 
-  const darkTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '© Esri, HERE, Garmin',
-    maxZoom: 16
-  });
+  // CARTO basemaps now watermark tiles without an API key, so the dark map stays on Esri (base + labels)
+  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+  const darkTile = L.layerGroup([
+    L.tileLayer(ESRI + 'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, HERE, Garmin', maxNativeZoom: 16, maxZoom: 18 }),
+    L.tileLayer(ESRI + 'Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 16, maxZoom: 18 })
+  ]);
 
-  const satTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '© Esri, Maxar, Earthstar Geographics',
-    maxZoom: 18
-  });
+  const satTile = L.layerGroup([
+    L.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, Maxar, Earthstar Geographics', maxZoom: 18 }),
+    L.tileLayer(ESRI + 'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }),
+    L.tileLayer(ESRI + 'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 })
+  ]);
 
   darkTile.addTo(map);
-  L.control.layers({ 'Dark Space': darkTile, 'Satellite': satTile }, null, { position: 'topright' }).addTo(map);
+  L.control.layers({ 'Dark Map': darkTile, 'Satellite + Labels': satTile }, null, { position: 'topright' }).addTo(map);
 
   hazardLayerGroup = L.layerGroup().addTo(map);
   dartLayerGroup = L.layerGroup().addTo(map);
@@ -183,7 +185,7 @@
     cityPresetsData.cities.forEach((c, idx) => {
       const opt = document.createElement('option');
       opt.value = idx;
-      opt.textContent = `${c.name} (${c.country}) — ${formatNumber(c.density_km2)} /km²`;
+      opt.textContent = `${c.name}, ${c.country} · ${formatNumber(c.density_km2)} people/km²`;
       citySelect.appendChild(opt);
     });
 
@@ -297,6 +299,12 @@
     asteroidSelect.value = ''; // Reset asteroid preset when user manually slides
   });
 
+  const angleSlider = document.getElementById('angle-slider');
+  const angleDisplay = document.getElementById('angle-display');
+  angleSlider.addEventListener('input', function () {
+    angleDisplay.textContent = this.value + '°';
+  });
+
   velocitySlider.addEventListener('input', function () {
     currentVelocityMs = parseFloat(this.value);
     velocityDisplay.textContent = (currentVelocityMs / 1000).toFixed(1) + ' km/s';
@@ -369,6 +377,23 @@
   }
 
   /* -------------------------------------------------------------
+     Atmospheric Breakup Altitude
+     Rock breaks when ram pressure rho_air(h) * v^2 exceeds its strength;
+     rho_air(h) = RHO0 * exp(-h / H).
+     RHO0 = 1.225 kg/m3 (sea level); H = 8.6 km is chosen so the blueprint's
+     Jumapalo example (35 MPa, 17 km/s) gives 19.9 km. Collins et al. 2005
+     use RHO0 = 1, H = 8 km, which gives ~16.9 km for the same rock.
+     Returns km, or 0 when the rock reaches the ground intact.
+     ------------------------------------------------------------- */
+  const RHO0 = 1.225, SCALE_H_KM = 8.6;
+  function breakupAltitudeKm(strengthMpa, velocityMs) {
+    const rhoNeeded = (strengthMpa * 1e6) / (velocityMs * velocityMs);
+    return rhoNeeded >= RHO0 ? 0 : SCALE_H_KM * Math.log(RHO0 / rhoNeeded);
+  }
+  console.assert(Math.abs(breakupAltitudeKm(35, 17000) - 19.9) < 0.05, 'breakup altitude: Jumapalo should be 19.9 km');
+  console.assert(breakupAltitudeKm(350, 17000) < 1, 'breakup altitude: iron at 17 km/s should reach the ground');
+
+  /* -------------------------------------------------------------
      "Drop It!" Physics Engine & Visualizer
      ------------------------------------------------------------- */
   btnDrop.addEventListener('click', function () {
@@ -410,7 +435,10 @@
 
     // Radius scaling: 15, 220, 650 * (kt ^ (1/3))
     const ktFactor = Math.pow(Math.max(1e-9, eKilotons), 1 / 3);
-    const rCraterM = 15 * ktFactor;
+    // Entry-angle correction for the crater only: × sin(θ)^(1/3) (Collins et al. 2005); 90° = blueprint formula
+    const angleDeg = parseFloat(angleSlider.value);
+    const angleFactor = Math.cbrt(Math.sin(angleDeg * Math.PI / 180));
+    const rCraterM = 15 * ktFactor * angleFactor;
     const rBlastM = 220 * ktFactor;
     const rGlassM = 650 * ktFactor;
 
@@ -463,6 +491,10 @@
 
     /* Build Results Card HTML */
     const regime = currentMaterial ? currentMaterial.impact_regime : 'Atmospheric Entry';
+    const breakupKm = currentMaterial ? breakupAltitudeKm(currentMaterial.yield_strength_mpa, v) : null;
+    const breakupText = breakupKm === null ? '—'
+      : breakupKm >= 1 ? `${breakupKm.toFixed(1)} km above ground`
+      : 'Below 1 km: reaches the ground nearly intact';
 
     let energyComparison = '';
     if (eTonsTNT >= 15000) {
@@ -480,11 +512,19 @@
       </div>
       <div class="result-row">
         <span class="result-label">TNT Equivalent</span>
-        <span class="result-value text-warning">${eTonsTNT < 1 ? eTonsTNT.toFixed(3) : formatNumber(eTonsTNT)} Tons TNT${energyComparison}</span>
+        <span class="result-value text-warning">${eTonsTNT < 1 ? eTonsTNT.toFixed(3) : eTonsTNT < 10 ? eTonsTNT.toFixed(2) : formatNumber(eTonsTNT)} Tons TNT${energyComparison}</span>
       </div>
       <div class="result-row">
         <span class="result-label">Entry Regime</span>
         <span class="result-value" style="font-size:.8rem; max-width:60%; text-align:right">${regime}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Entry Angle</span>
+        <span class="result-value">${angleDeg}° <span class="text-muted" style="font-size:.75rem">(crater ×${angleFactor.toFixed(2)})</span></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Breakup Altitude</span>
+        <span class="result-value text-accent">${breakupText}</span>
       </div>
 
       <div class="mt-2" style="border-top:1px solid rgba(255,255,255,.08); padding-top:.5rem">
@@ -507,12 +547,12 @@
 
       <div class="mt-2" style="background:rgba(255,255,255,.03); padding:.6rem; border-radius:8px">
         <div class="result-row" style="border-bottom:none">
-          <span class="result-label">👥 Est. Population in Blast Zone:</span>
-          <span class="result-value text-danger">${formatNumber(popBlast)} citizens</span>
+          <span class="result-label">👥 People in blast zone (est.)</span>
+          <span class="result-value text-danger" style="white-space:nowrap">${formatNumber(popBlast)}</span>
         </div>
         <div class="result-row" style="border-bottom:none">
-          <span class="result-label">🪟 Est. Population in Glass Shatter:</span>
-          <span class="result-value text-warning">${formatNumber(popGlass)} citizens</span>
+          <span class="result-label">🪟 People in glass-shatter zone (est.)</span>
+          <span class="result-value text-warning" style="white-space:nowrap">${formatNumber(popGlass)}</span>
         </div>
       </div>
 
