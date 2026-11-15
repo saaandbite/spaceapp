@@ -2,7 +2,7 @@
  * page3.js — Drop a Meteor! Real-Map Impact & Mitigation Sandbox
  * Compliant with NASA Space Apps Challenge 2026 Blueprint
  * Features:
- *   - Real Leaflet interactive map (Dark & Satellite tiles)
+ *   - MapLibre GL 3D globe that flattens to a street map when zoomed in (Dark & Satellite tiles)
  *   - Physics-accurate kinetic energy & hazard radius equations
  *   - No-crater rule for Ordinary Chondrite < 500 kg (Fragment Strewn Field)
  *   - NASA SEDAC GPWv4 population density estimation
@@ -111,69 +111,160 @@
   /* -------------------------------------------------------------
      Map Initialization
      ------------------------------------------------------------- */
-  const map = L.map('sim-map', {
-    zoomControl: true,
-    minZoom: 3,
-    maxZoom: 18
-  }).setView([currentLat, currentLng], 11);
-
+  // MapLibre globe: a 3D Earth when zoomed out, flattening to a normal map near city level
   // CARTO basemaps now watermark tiles without an API key, so the dark map stays on Esri (base + labels)
   const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
-  const darkTile = L.layerGroup([
-    L.tileLayer(ESRI + 'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, HERE, Garmin', maxNativeZoom: 16, maxZoom: 18 }),
-    L.tileLayer(ESRI + 'Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 16, maxZoom: 18 })
-  ]);
+  const raster = (path, maxzoom, attribution = '') => ({
+    type: 'raster', tiles: [ESRI + path + '/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom, attribution
+  });
+  const BASEMAPS = {
+    dark: ['dark-base', 'dark-ref'],
+    satellite: ['sat-img', 'sat-roads', 'sat-places']
+  };
+  // No GPU (hardware acceleration off / missing driver) means WebGL runs on the CPU: render lighter there
+  const SOFTWARE_GL = (() => {
+    try {
+      const gl = document.createElement('canvas').getContext('webgl');
+      const info = gl && gl.getExtension('WEBGL_debug_renderer_info');
+      return !gl || /swiftshader|basic render|llvmpipe|software/i.test(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '');
+    } catch (e) { return true; }
+  })();
+  const map = new maplibregl.Map({
+    container: 'sim-map',
+    pixelRatio: SOFTWARE_GL ? 1 : Math.min(devicePixelRatio, 2),
+    fadeDuration: SOFTWARE_GL ? 0 : 300,
+    center: [currentLng, currentLat],
+    zoom: 1.6,
+    maxZoom: 18,
+    attributionControl: { compact: true },
+    style: {
+      version: 8,
+      projection: { type: 'globe' },
+      sky: { 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] },
+      sources: {
+        'dark-base': raster('Canvas/World_Dark_Gray_Base', 16, '© Esri, HERE, Garmin'),
+        'dark-ref': raster('Canvas/World_Dark_Gray_Reference', 16),
+        'sat-img': raster('World_Imagery', 18, '© Esri, Maxar, Earthstar Geographics'),
+        'sat-roads': raster('Reference/World_Transportation', 18),
+        'sat-places': raster('Reference/World_Boundaries_and_Places', 18)
+      },
+      layers: [
+        { id: 'space', type: 'background', paint: { 'background-color': '#05050f' } },
+        ...Object.entries(BASEMAPS).flatMap(([name, ids]) => ids.map(id => ({
+          id, type: 'raster', source: id, layout: { visibility: name === 'dark' ? 'visible' : 'none' }
+        })))
+      ]
+    }
+  });
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-left');
 
-  const satTile = L.layerGroup([
-    L.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri, Maxar, Earthstar Geographics', maxZoom: 18 }),
-    L.tileLayer(ESRI + 'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }),
-    L.tileLayer(ESRI + 'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 })
-  ]);
+  /* Basemap switcher (replaces Leaflet's layers control) */
+  map.addControl({
+    onAdd() {
+      const el = document.createElement('div');
+      el.className = 'maplibregl-ctrl maplibregl-ctrl-group basemap-switch';
+      el.innerHTML = '<button type="button" data-map="dark" class="active">Dark Map</button><button type="button" data-map="satellite">Satellite + Labels</button>';
+      el.addEventListener('click', e => {
+        const pick = e.target.dataset.map;
+        if (!pick) return;
+        el.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === e.target));
+        Object.entries(BASEMAPS).forEach(([name, ids]) =>
+          ids.forEach(id => map.setLayoutProperty(id, 'visibility', name === pick ? 'visible' : 'none')));
+      });
+      return el;
+    },
+    onRemove() {}
+  }, 'top-right');
 
-  darkTile.addTo(map);
-  L.control.layers({ 'Dark Map': darkTile, 'Satellite + Labels': satTile }, null, { position: 'topright' }).addTo(map);
+  /* Slow spin until the user touches the globe (skipped for reduced motion) */
+  let spinning = !SOFTWARE_GL && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stopSpin = () => { spinning = false; };
+  ['mousedown', 'touchstart', 'wheel'].forEach(ev => map.on(ev, stopSpin));
+  (function spin() {
+    if (!spinning) return;
+    if (map.getZoom() < 3) { const c = map.getCenter(); map.setCenter([c.lng + 0.08, c.lat]); }
+    requestAnimationFrame(spin);
+  })();
 
-  hazardLayerGroup = L.layerGroup().addTo(map);
-  dartLayerGroup = L.layerGroup().addTo(map);
+  /* GeoJSON helpers for hazard rings and the DART line */
+  const EMPTY = { type: 'FeatureCollection', features: [] };
+  function circlePolygon(lat, lng, radiusM, props, steps = 96) {
+    const R = 6371008.8, d = radiusM / R;
+    const φ1 = lat * Math.PI / 180, λ1 = lng * Math.PI / 180;
+    const ring = [];
+    for (let i = 0; i <= steps; i++) {
+      const θ = (i / steps) * 2 * Math.PI;
+      const φ2 = Math.asin(Math.sin(φ1) * Math.cos(d) + Math.cos(φ1) * Math.sin(d) * Math.cos(θ));
+      const λ2 = λ1 + Math.atan2(Math.sin(θ) * Math.sin(d) * Math.cos(φ1), Math.cos(d) - Math.sin(φ1) * Math.sin(φ2));
+      ring.push([λ2 * 180 / Math.PI, φ2 * 180 / Math.PI]);
+    }
+    return { type: 'Feature', properties: props, geometry: { type: 'Polygon', coordinates: [ring] } };
+  }
+  console.assert(Math.abs(circlePolygon(0, 0, 111195, {}).geometry.coordinates[0][0][1] - 1) < 0.001, 'circlePolygon: 111.2 km north of the equator should be ~1° lat');
+
+  const mapReady = new Promise(resolve => map.on('load', () => {
+    map.addSource('hazard', { type: 'geojson', data: EMPTY });
+    map.addLayer({ id: 'hazard-fill', type: 'fill', source: 'hazard', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': ['get', 'opacity'] } });
+    map.addLayer({ id: 'hazard-line', type: 'line', source: 'hazard', paint: { 'line-color': ['get', 'color'], 'line-width': 2 } });
+    map.addSource('dart', { type: 'geojson', data: EMPTY });
+    map.addLayer({ id: 'dart-line', type: 'line', source: 'dart', paint: { 'line-color': '#69f0ae', 'line-width': 3, 'line-dasharray': [2, 2] } });
+    resolve();
+  }));
+
+  /* Hover tooltip for rings (Leaflet's sticky tooltip) */
+  const hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
+  map.on('mousemove', 'hazard-fill', e => {
+    // features come back topmost first, so the smallest ring under the cursor wins
+    hoverPopup.setLngLat(e.lngLat).setHTML(e.features[0].properties.label).addTo(map);
+  });
+  map.on('mouseleave', 'hazard-fill', () => hoverPopup.remove());
+
+  hazardLayerGroup = {
+    setRings: features => mapReady.then(() => map.getSource('hazard').setData({ type: 'FeatureCollection', features })),
+    clearLayers: () => mapReady.then(() => map.getSource('hazard').setData(EMPTY))
+  };
+  let deflMarker = null;
+  dartLayerGroup = {
+    clearLayers() {
+      if (deflMarker) { deflMarker.remove(); deflMarker = null; }
+      mapReady.then(() => map.getSource('dart').setData(EMPTY));
+    }
+  };
 
   /* Target Marker */
-  const targetIcon = L.divIcon({
-    className: 'custom-target-icon',
-    html: `<div style="
-      width: 22px; height: 22px;
-      background: #ff5252;
-      border: 3px solid #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 0 14px rgba(255,82,82,0.9), 0 0 24px rgba(255,82,82,0.6);
-      transform: translate(-50%, -50%);
-      cursor: grab;
-    "></div>`,
-    iconSize: [22, 22]
-  });
+  const targetEl = document.createElement('div');
+  targetEl.style.cssText = 'width:22px;height:22px;background:#ff5252;border:3px solid #fff;border-radius:50%;box-shadow:0 0 14px rgba(255,82,82,.9),0 0 24px rgba(255,82,82,.6);cursor:grab';
+  targetEl.title = 'Impact Ground Zero';
 
-  targetMarker = L.marker([currentLat, currentLng], {
-    icon: targetIcon,
-    draggable: true,
-    title: 'Impact Ground Zero'
-  }).addTo(map);
+  targetMarker = new maplibregl.Marker({ element: targetEl, draggable: true })
+    .setLngLat([currentLng, currentLat])
+    .setPopup(new maplibregl.Popup({ offset: 14 }).setHTML('<b>Impact Ground Zero</b><br>Drag me or click anywhere on map.'))
+    .addTo(map);
 
-  targetMarker.bindPopup('<b>Impact Ground Zero</b><br>Drag me or click anywhere on map.');
-
-  targetMarker.on('dragend', function (e) {
-    const pos = e.target.getLatLng();
+  targetMarker.on('dragend', function () {
+    const pos = targetMarker.getLngLat();
     setCoordinates(pos.lat, pos.lng);
   });
 
   map.on('click', function (e) {
-    setCoordinates(e.latlng.lat, e.latlng.lng);
+    stopSpin();
+    setCoordinates(e.lngLat.lat, e.lngLat.lng);
   });
 
   function setCoordinates(lat, lng) {
     currentLat = parseFloat(lat.toFixed(4));
     currentLng = parseFloat(lng.toFixed(4));
-    targetMarker.setLatLng([currentLat, currentLng]);
+    targetMarker.setLngLat([currentLng, currentLat]);
     lblLat.textContent = currentLat.toFixed(2);
     lblLng.textContent = currentLng.toFixed(2);
+  }
+
+  /* Fit the camera around a ring of radius radiusM (fitBounds via the ring's polygon) */
+  function flyToRadius(lat, lng, radiusM, opts = {}) {
+    const bounds = new maplibregl.LngLatBounds();
+    circlePolygon(lat, lng, radiusM, {}, 32).geometry.coordinates[0].forEach(c => bounds.extend(c));
+    // a long flight re-renders every frame; without a GPU jump almost straight there
+    map.fitBounds(bounds, { padding: 60, duration: SOFTWARE_GL ? 600 : 2500, essential: true, ...opts });
   }
 
   /* -------------------------------------------------------------
@@ -195,7 +286,8 @@
       const city = cityPresetsData.cities[parseInt(val, 10)];
       if (city) {
         setCoordinates(city.latitude, city.longitude);
-        map.flyTo([city.latitude, city.longitude], 11, { duration: 1.2 });
+        stopSpin();
+        map.flyTo({ center: [city.longitude, city.latitude], zoom: 11, duration: SOFTWARE_GL ? 600 : 2500, essential: true });
       }
     });
   }
@@ -415,14 +507,16 @@
         setTimeout(() => simMapEl.classList.remove('impact-shake'), 500);
       }
 
-      // Expanding Shockwave Wave Icon
-      const shockwaveIcon = L.divIcon({
-        className: 'shockwave-container',
-        html: '<div class="shockwave-effect"></div>',
-        iconSize: [60, 60]
+      // Expanding shockwave; the 0×0 wrapper keeps MapLibre's positioning transform off the animated element
+      const wave = document.createElement('div');
+      wave.style.pointerEvents = 'none';
+      wave.innerHTML = '<div class="shockwave-effect" style="position:absolute"></div>';
+      stopSpin();
+      // play the shockwave once the camera has arrived
+      map.once('moveend', () => {
+        const shockwaveMarker = new maplibregl.Marker({ element: wave }).setLngLat([currentLng, currentLat]).addTo(map);
+        setTimeout(() => shockwaveMarker.remove(), 1500);
       });
-      const shockwaveMarker = L.marker([currentLat, currentLng], { icon: shockwaveIcon, interactive: false }).addTo(hazardLayerGroup);
-      setTimeout(() => hazardLayerGroup.removeLayer(shockwaveMarker), 1500);
     }
 
     const mass = currentMassKg;
@@ -450,44 +544,17 @@
     const popBlast = estimatePopulation(currentLat, currentLng, rBlastM / 1000);
     const popGlass = estimatePopulation(currentLat, currentLng, rGlassM / 1000);
 
-    /* Draw Leaflet Circles */
-    // 1. Yellow Circle — Window Shatter (> 1 psi)
-    const glassCircle = L.circle([currentLat, currentLng], {
-      radius: rGlassM,
-      color: '#fff176',
-      fillColor: '#fff176',
-      fillOpacity: 0.12,
-      weight: 2,
-      dashArray: '4, 4'
-    }).addTo(hazardLayerGroup);
-    glassCircle.bindTooltip(`🟡 Window Shatter Zone: ${formatDistance(rGlassM)}`, { sticky: true });
-
-    // 2. Orange Circle — Severe Structural Blast (> 20 psi / Evacuation)
-    const blastCircle = L.circle([currentLat, currentLng], {
-      radius: rBlastM,
-      color: '#ffab40',
-      fillColor: '#ffab40',
-      fillOpacity: 0.22,
-      weight: 2
-    }).addTo(hazardLayerGroup);
-    blastCircle.bindTooltip(`🟠 Severe Blast & Evacuation: ${formatDistance(rBlastM)}`, { sticky: true });
-
-    // 3. Red Circle — Crater Zone or Fragment Strewn Field
+    /* Draw hazard rings (largest first so smaller rings sit on top) */
     const craterLabel = isAirburstStrewn ? 'Fragment Strewn Field (No Surface Crater)' : 'Surface Crater Zone';
     const craterColor = isAirburstStrewn ? '#81d4fa' : '#ff5252';
+    hazardLayerGroup.setRings([
+      circlePolygon(currentLat, currentLng, rGlassM, { color: '#fff176', opacity: 0.12, label: `🟡 Window Shatter Zone: ${formatDistance(rGlassM)}` }),
+      circlePolygon(currentLat, currentLng, rBlastM, { color: '#ffab40', opacity: 0.22, label: `🟠 Severe Blast & Evacuation: ${formatDistance(rBlastM)}` }),
+      circlePolygon(currentLat, currentLng, Math.max(5, rCraterM), { color: craterColor, opacity: 0.45, label: `🔴 ${craterLabel}: ${formatDistance(rCraterM)}` })
+    ]);
 
-    const craterCircle = L.circle([currentLat, currentLng], {
-      radius: Math.max(5, rCraterM),
-      color: craterColor,
-      fillColor: craterColor,
-      fillOpacity: 0.45,
-      weight: 2
-    }).addTo(hazardLayerGroup);
-    craterCircle.bindTooltip(`🔴 ${craterLabel}: ${formatDistance(rCraterM)}`, { sticky: true });
-
-    // Fit map bounds to view all hazard rings
-    const allBounds = L.featureGroup([glassCircle, blastCircle, craterCircle]).getBounds();
-    map.fitBounds(allBounds.pad(0.35));
+    // On load the globe keeps spinning; on Drop It the camera flies from space down to the rings
+    if (!isInitial) flyToRadius(currentLat, currentLng, rGlassM * 1.35);
 
     /* Build Results Card HTML */
     const regime = currentMaterial ? currentMaterial.impact_regime : 'Atmospheric Entry';
@@ -585,34 +652,18 @@
     const deflectedLat = currentLat;
     const deflectedLng = currentLng + shiftDegLng;
 
-    // Deflected marker (Green icon)
-    const deflectedIcon = L.divIcon({
-      className: 'dart-deflected-icon',
-      html: `<div style="
-        width: 18px; height: 18px;
-        background: #69f0ae;
-        border: 2px solid #ffffff;
-        border-radius: 50%;
-        box-shadow: 0 0 16px rgba(105,240,174,0.9);
-        transform: translate(-50%, -50%);
-      "></div>`,
-      iconSize: [18, 18]
-    });
+    // Deflected marker (green) and dashed trajectory-shift line
+    const deflEl = document.createElement('div');
+    deflEl.style.cssText = 'width:18px;height:18px;background:#69f0ae;border:2px solid #fff;border-radius:50%;box-shadow:0 0 16px rgba(105,240,174,.9);cursor:pointer';
+    deflMarker = new maplibregl.Marker({ element: deflEl })
+      .setLngLat([deflectedLng, deflectedLat])
+      .setPopup(new maplibregl.Popup({ offset: 12 }).setHTML(`<b>🚀 Deflected Impact Point</b><br>Shifted by <b>${shiftKm.toFixed(2)} km</b> away from ground zero!`))
+      .addTo(map);
 
-    const deflMarker = L.marker([deflectedLat, deflectedLng], { icon: deflectedIcon }).addTo(dartLayerGroup);
-    deflMarker.bindPopup(`<b>🚀 Deflected Impact Point</b><br>Shifted by <b>${shiftKm.toFixed(2)} km</b> away from ground zero!`);
-
-    // Trajectory deflection line (Green dashed line)
-    const trajectoryLine = L.polyline([
-      [currentLat, currentLng],
-      [deflectedLat, deflectedLng]
-    ], {
-      color: '#69f0ae',
-      weight: 3,
-      dashArray: '6, 6'
-    }).addTo(dartLayerGroup);
-
-    trajectoryLine.bindTooltip(`Trajectory Shift: ${shiftKm.toFixed(2)} km`, { sticky: true });
+    mapReady.then(() => map.getSource('dart').setData({
+      type: 'Feature', properties: {},
+      geometry: { type: 'LineString', coordinates: [[currentLng, currentLat], [deflectedLng, deflectedLat]] }
+    }));
 
     // Output explanation
     dartResult.innerHTML = `
@@ -626,7 +677,9 @@
     `;
 
     // Fit bounds to show both ground zero and deflected marker
-    map.fitBounds(L.featureGroup([targetMarker, deflMarker]).getBounds().pad(0.3));
+    stopSpin();
+    map.fitBounds([[Math.min(currentLng, deflectedLng), currentLat], [Math.max(currentLng, deflectedLng), currentLat]],
+      { padding: 80, maxZoom: 14, duration: 2000, essential: true });
   });
 
   // Run initial simulation on load for default Jumapalo without shake

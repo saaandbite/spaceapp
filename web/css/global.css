@@ -226,6 +226,21 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18p
 .leaflet-control-layers { background: var(--bg-glass) !important; color: var(--text) !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 8px !important; }
 .leaflet-control-zoom a { background: var(--bg-card) !important; color: var(--text) !important; border-color: rgba(255,255,255,.08) !important; }
 
+/* --- MapLibre Overrides (simulator globe) --- */
+.maplibregl-map { background: #05050f; font-family: var(--font-body); }
+.maplibregl-popup-content { background: var(--bg-card); color: var(--text); border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 32px rgba(0,0,0,.5); font-size: .85rem; line-height: 1.5; }
+.maplibregl-popup-content b { color: var(--accent); }
+.maplibregl-popup-tip { border-top-color: var(--bg-card) !important; border-bottom-color: var(--bg-card) !important; }
+.maplibregl-popup-close-button { color: var(--text-muted); }
+.maplibregl-ctrl-group { background: var(--bg-card); border: 1px solid rgba(255,255,255,.08); }
+.maplibregl-ctrl-group button + button { border-top-color: rgba(255,255,255,.08); }
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon { filter: invert(1); }
+.basemap-switch { display: flex; }
+.basemap-switch button { width: auto; height: auto; padding: .4rem .7rem; color: var(--text-muted); font-size: .78rem; border-top: none !important; }
+.basemap-switch button.active { color: var(--text); background: rgba(79,195,247,.18); }
+.maplibregl-ctrl-attrib { background: rgba(10,10,26,.7) !important; color: var(--text-muted); }
+.maplibregl-ctrl-attrib a { color: var(--text-muted); }
+
 /* --- Video Background --- */
 .video-background-wrap {
   position: fixed;
